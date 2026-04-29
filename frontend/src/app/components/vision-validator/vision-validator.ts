@@ -16,23 +16,10 @@ export class VisionValidator {
   validationResult = signal<any>(null);
   loading = signal(false);
   error = signal('');
-  isFlashOn = signal(false);
   isDragActive = signal(false);
-
-  async toggleFlash() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-      const track = stream.getVideoTracks()[0];
-      const capabilities = track.getCapabilities() as any;
-      if (capabilities.torch) {
-        this.isFlashOn.set(!this.isFlashOn());
-        track.applyConstraints({ advanced: [{ torch: this.isFlashOn() }] as any });
-      } else {
-        this.toast.info("Flash/Torch is not supported on this device's camera.");
-      }
-    } catch (err) {
-      this.toast.error("Could not access camera for flash.");
-    }
+  openCamera(inputElement: HTMLInputElement) {
+    this.toast.info('Opening native camera for high-resolution capture...');
+    inputElement.click();
   }
 
   async compressImage(file: File): Promise<File> {

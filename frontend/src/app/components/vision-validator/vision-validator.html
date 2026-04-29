@@ -2,15 +2,15 @@
   <div class="header">
     <h2>Form 6 Vision Validator</h2>
     <p>Upload a Form 6 image to auto-validate missing fields and identify formatting errors.</p>
-    <button class="flash-btn" (click)="toggleFlash()">
-      {{ isFlashOn() ? '🔦 Turn Flash Off' : '🔦 Turn Flash On' }}
+    <button class="btn-primary" (click)="openCamera(cameraInput)">
+      📸 Open Camera
     </button>
   </div>
   
   <div class="upload-zone" [class.disabled]="loading()" [class.drag-active]="isDragActive()"
        (dragenter)="onDragEnter($event)" (dragover)="onDragOver($event)"
        (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
-    <input type="file" accept="image/*" id="fileUpload" (change)="onFileSelected($event)" [disabled]="loading()" />
+    <input #cameraInput type="file" accept="image/*" id="fileUpload" capture="environment" (change)="onFileSelected($event)" [disabled]="loading()" />
     <label for="fileUpload" class="upload-label">
       <span class="icon">📁</span>
       <span class="text">Click or drag image here to upload</span>

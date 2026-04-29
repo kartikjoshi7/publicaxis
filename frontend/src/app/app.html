@@ -18,15 +18,15 @@
         <span class="icon">🛡️</span> Misinfo Sentinel
       </li>
       <li [class.active]="activeTab() === 'infra'" (click)="setTab('infra')">
-        <span class="icon">🚧</span> Infra Tracker
+        <span class="icon">🚧</span> Civic Access Auditor
       </li>
       <li [class.active]="activeTab() === 'kyc'" (click)="setTab('kyc')">
         <span class="icon">📡</span> KYC Radar
       </li>
     </ul>
-    <div class="sidebar-footer">
-      <p>Powered by Gemini 1.5</p>
-    </div>
+    <footer class="app-footer">
+    <p>Powered by Gemini 2.5 Flash</p>
+  </footer>
   </nav>
   
   <main class="content-area">
@@ -35,7 +35,7 @@
         <span *ngIf="activeTab() === 'copilot'">Omni-Civic Copilot</span>
         <span *ngIf="activeTab() === 'vision'">Form 6 Vision Validator</span>
         <span *ngIf="activeTab() === 'misinfo'">Misinformation Sentinel</span>
-        <span *ngIf="activeTab() === 'infra'">Smart City Issue Tracker</span>
+        <span *ngIf="activeTab() === 'infra'">Civic Access Auditor</span>
         <span *ngIf="activeTab() === 'kyc'">KYC Radar</span>
       </h1>
       <div class="user-profile">

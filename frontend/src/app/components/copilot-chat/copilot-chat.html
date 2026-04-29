@@ -20,7 +20,7 @@
     </div>
     <div *ngFor="let msg of messages()" [ngClass]="msg.role === 'user' ? 'user-msg' : 'ai-msg'">
       <strong>{{ msg.role === 'user' ? 'You' : 'Copilot' }}:</strong>
-      <p>{{ msg.text }}</p>
+      <markdown [data]="msg.text"></markdown>
     </div>
     <div *ngIf="loading()" class="loading">Copilot is generating response...</div>
   </div>

@@ -1,12 +1,13 @@
 import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MarkdownModule } from 'ngx-markdown';
 import { Api } from '../../services/api';
 
 @Component({
   selector: 'app-copilot-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MarkdownModule],
   templateUrl: './copilot-chat.html',
   styleUrls: ['./copilot-chat.css']
 })

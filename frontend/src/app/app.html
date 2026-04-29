@@ -1,0 +1,46 @@
+<div class="dashboard-layout">
+  <nav class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">🏛️</div>
+      <div class="logo-text">
+        <h2>PublicAxis</h2>
+        <p>Enterprise E-Governance</p>
+      </div>
+    </div>
+    <ul class="nav-menu">
+      <li [class.active]="activeTab() === 'copilot'" (click)="setTab('copilot')">
+        <span class="icon">💬</span> Omni-Civic Copilot
+      </li>
+      <li [class.active]="activeTab() === 'vision'" (click)="setTab('vision')">
+        <span class="icon">👁️</span> Vision Validator
+      </li>
+      <li [class.active]="activeTab() === 'kyc'" (click)="setTab('kyc')">
+        <span class="icon">📡</span> KYC Radar
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <p>Powered by Gemini 1.5</p>
+    </div>
+  </nav>
+  
+  <main class="content-area">
+    <header class="top-bar">
+      <h1>
+        <span *ngIf="activeTab() === 'copilot'">Omni-Civic Copilot</span>
+        <span *ngIf="activeTab() === 'vision'">Form 6 Vision Validator</span>
+        <span *ngIf="activeTab() === 'kyc'">KYC Radar</span>
+      </h1>
+      <div class="user-profile">
+        <span class="avatar">👤</span> Admin
+      </div>
+    </header>
+    
+    <div class="component-container">
+      <div class="component-wrapper fade-in">
+        <app-copilot-chat *ngIf="activeTab() === 'copilot'"></app-copilot-chat>
+        <app-vision-validator *ngIf="activeTab() === 'vision'"></app-vision-validator>
+        <app-kyc-radar *ngIf="activeTab() === 'kyc'"></app-kyc-radar>
+      </div>
+    </div>
+  </main>
+</div>

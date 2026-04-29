@@ -1,0 +1,16 @@
+<div class="chat-container">
+  <div class="chat-history">
+    <div *ngIf="messages().length === 0" class="empty-state">
+      Ask the Omni-Civic Copilot about election procedures!
+    </div>
+    <div *ngFor="let msg of messages()" [ngClass]="msg.role === 'user' ? 'user-msg' : 'ai-msg'">
+      <strong>{{ msg.role === 'user' ? 'You' : 'Copilot' }}:</strong>
+      <p>{{ msg.text }}</p>
+    </div>
+    <div *ngIf="loading()" class="loading">Copilot is typing...</div>
+  </div>
+  <div class="chat-input">
+    <input type="text" [(ngModel)]="query" placeholder="Ask a civic question (e.g. Can I vote without an Epic card?)" (keyup.enter)="sendMessage()" />
+    <button (click)="sendMessage()" [disabled]="loading() || !query()">Send</button>
+  </div>
+</div>

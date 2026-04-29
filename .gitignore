@@ -1,0 +1,36 @@
+# ------------------
+# Backend (Python)
+# ------------------
+backend/venv/
+backend/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment variables (Secrets!)
+.env
+*.env
+backend/.env
+
+# ------------------
+# Frontend (Angular/Node)
+# ------------------
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+npm-debug.log
+yarn-error.log
+
+# ------------------
+# OS & IDE Files
+# ------------------
+.DS_Store
+.vscode/
+.idea/
+*.log

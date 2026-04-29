@@ -1,0 +1,125 @@
+:host {
+  display: block;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+  background-color: #f8fafc;
+}
+.sidebar {
+  width: 280px;
+  background-color: #0f172a;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+.logo {
+  padding: 25px 20px;
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.logo-icon {
+  font-size: 2.5rem;
+}
+.logo-text h2 {
+  margin: 0;
+  color: #38bdf8;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.logo-text p {
+  margin: 5px 0 0 0;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.nav-menu {
+  list-style: none;
+  padding: 20px 0;
+  margin: 0;
+  flex: 1;
+}
+.nav-menu li {
+  padding: 15px 25px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-left: 4px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 1.1rem;
+  color: #cbd5e1;
+}
+.nav-menu li .icon {
+  font-size: 1.3rem;
+}
+.nav-menu li:hover {
+  background-color: #1e293b;
+  color: white;
+}
+.nav-menu li.active {
+  background-color: #1e293b;
+  border-left-color: #38bdf8;
+  color: #38bdf8;
+  font-weight: 600;
+}
+.sidebar-footer {
+  padding: 20px;
+  text-align: center;
+  border-top: 1px solid #1e293b;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+.content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.top-bar {
+  background-color: white;
+  padding: 20px 40px;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 5;
+}
+.top-bar h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #0f172a;
+  font-weight: 700;
+}
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+}
+.avatar {
+  background: #f1f5f9;
+  padding: 8px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+}
+.component-container {
+  padding: 40px;
+  overflow-y: auto;
+  flex: 1;
+}
+.component-wrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.fade-in { animation: fadeIn 0.4s ease-in; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

@@ -1,0 +1,36 @@
+<div class="vision-container">
+  <div class="header">
+    <h2>Form 6 Vision Validator</h2>
+    <p>Upload a Form 6 image to auto-validate missing fields and identify formatting errors.</p>
+  </div>
+  
+  <div class="upload-zone" [class.disabled]="loading()">
+    <input type="file" accept="image/*" id="fileUpload" (change)="onFileSelected($event)" [disabled]="loading()" />
+    <label for="fileUpload" class="upload-label">
+      <span class="icon">📁</span>
+      <span class="text">Click or drag image here to upload</span>
+    </label>
+    <p *ngIf="loading()" class="loading">Validating document via Gemini Vision...</p>
+    <p *ngIf="error()" class="error">⚠️ {{ error() }}</p>
+  </div>
+
+  <div *ngIf="validationResult()" class="results fade-in">
+    <h3>Validation Results</h3>
+    
+    <div class="result-box missing">
+      <h4>Missing Fields</h4>
+      <ul>
+        <li *ngIf="validationResult().missing_fields?.length === 0" class="success-item">✅ All required fields are present.</li>
+        <li *ngFor="let field of validationResult().missing_fields">❌ {{ field }}</li>
+      </ul>
+    </div>
+    
+    <div class="result-box formatting">
+      <h4>Formatting Errors</h4>
+      <ul>
+        <li *ngIf="validationResult().formatting_errors?.length === 0" class="success-item">✅ No formatting errors found.</li>
+        <li *ngFor="let error of validationResult().formatting_errors">❌ {{ error }}</li>
+      </ul>
+    </div>
+  </div>
+</div>

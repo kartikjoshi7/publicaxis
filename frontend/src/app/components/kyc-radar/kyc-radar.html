@@ -1,0 +1,31 @@
+<div class="kyc-container">
+  <div class="header">
+    <h2>KYC Radar</h2>
+    <p>Real-time background scanning for political candidates.</p>
+  </div>
+  
+  <div class="search-bar">
+    <div class="input-wrapper">
+      <span class="search-icon">🔍</span>
+      <input type="text" [(ngModel)]="candidateId" placeholder="Enter Candidate Name or ID..." (keyup.enter)="searchCandidate()" />
+    </div>
+    <button (click)="searchCandidate()" [disabled]="loading() || !candidateId()">Scan Profile</button>
+  </div>
+  
+  <div *ngIf="loading()" class="radar-loading">
+    <div class="radar-spinner"></div>
+    <p>Scanning comprehensive background data...</p>
+  </div>
+  
+  <p *ngIf="error()" class="error">⚠️ {{ error() }}</p>
+
+  <div *ngIf="profile()" class="profile-card fade-in">
+    <div class="card-header">
+      <h3>Candidate Background Summary</h3>
+      <span class="badge verified">Verified by AI</span>
+    </div>
+    <div class="profile-content">
+      <pre>{{ profile() }}</pre>
+    </div>
+  </div>
+</div>

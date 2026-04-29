@@ -4,9 +4,14 @@
       <h3 style="margin: 0;">Omni-Civic Copilot</h3>
       <span class="badge audio-badge">🎙️ Hyper-Local Audio</span>
     </div>
-    <button class="audio-toggle" (click)="toggleAudio()" [title]="isAudioEnabled() ? 'Mute AI Voice' : 'Unmute AI Voice'">
-      {{ isAudioEnabled() ? '🔊 Enabled' : '🔇 Muted' }}
-    </button>
+    <div class="header-controls">
+      <select class="lang-select" [ngModel]="selectedLang()" (ngModelChange)="selectedLang.set($event)" title="Select Language">
+        <option *ngFor="let lang of languages" [value]="lang.code">{{ lang.name }}</option>
+      </select>
+      <button class="audio-toggle" (click)="toggleAudio()" [title]="isAudioEnabled() ? 'Mute AI Voice' : 'Unmute AI Voice'">
+        {{ isAudioEnabled() ? '🔊 Enabled' : '🔇 Muted' }}
+      </button>
+    </div>
   </div>
   
   <div class="chat-history">

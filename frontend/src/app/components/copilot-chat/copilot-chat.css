@@ -1,6 +1,9 @@
 .chat-container { border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; max-width: 800px; margin: 0 auto; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 15px; }
 .chat-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; }
 .header-titles { display: flex; align-items: center; gap: 10px; }
+.header-controls { display: flex; align-items: center; gap: 10px; }
+.lang-select { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 20px; font-weight: bold; color: #475569; background: #f8fafc; cursor: pointer; outline: none; transition: border-color 0.2s; }
+.lang-select:focus { border-color: #38bdf8; }
 .audio-badge { background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
 .audio-toggle { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; color: #475569; transition: all 0.2s; }
 .audio-toggle:hover { background: #e2e8f0; }

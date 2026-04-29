@@ -21,6 +21,17 @@ export class CopilotChat implements OnInit, OnDestroy {
   isListening = signal(false);
   usedMicrophone = signal(false);
   
+  languages = [
+    { code: 'en-IN', name: 'English' },
+    { code: 'hi-IN', name: 'Hindi (हिंदी)' },
+    { code: 'gu-IN', name: 'Gujarati (ગુજરાતી)' },
+    { code: 'ta-IN', name: 'Tamil (தமிழ்)' },
+    { code: 'te-IN', name: 'Telugu (తెలుగు)' },
+    { code: 'mr-IN', name: 'Marathi (मराठी)' },
+    { code: 'bn-IN', name: 'Bengali (বাংলা)' }
+  ];
+  selectedLang = signal('en-IN');
+  
   private recognition: any = null;
 
   ngOnInit() {
@@ -71,6 +82,7 @@ export class CopilotChat implements OnInit, OnDestroy {
       this.recognition.stop();
       this.isListening.set(false);
     } else {
+      this.recognition.lang = this.selectedLang();
       this.recognition.start();
       this.isListening.set(true);
       this.usedMicrophone.set(true); // Track that user utilized voice input
@@ -89,10 +101,11 @@ export class CopilotChat implements OnInit, OnDestroy {
     
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = this.selectedLang();
     
     // Find localized voice if available
     const voices = window.speechSynthesis.getVoices();
-    const localizedVoice = voices.find(v => v.lang.includes('IN') || v.lang.includes('en-IN'));
+    const localizedVoice = voices.find(v => v.lang === this.selectedLang() || v.lang.includes(this.selectedLang().split('-')[0]));
     if (localizedVoice) {
       utterance.voice = localizedVoice;
     }

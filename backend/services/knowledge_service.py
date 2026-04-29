@@ -34,5 +34,11 @@ def get_election_context(query: str) -> str:
        - A citizen must be 18 years of age or older on the qualifying date (typically Jan 1st, April 1st, July 1st, or Oct 1st of the year) to register.
        - Electronic Voting Machines (EVMs) and Voter Verifiable Paper Audit Trails (VVPATs) are used for voting.
        - Mobile phones, cameras, and any other recording devices are strictly prohibited inside the polling booth.
+       
+    5. General Election Concepts:
+       - Election: The formal process of selecting a person for public office or of accepting or rejecting a political proposition by voting.
+       - Voter ID (EPIC): Electors Photo Identity Card, a specialized identity card issued by the Election Commission of India to eligible voters.
+       - Constituency: A specific geographic area that an elected official represents.
+       - Model Code of Conduct: A set of guidelines issued by the Election Commission of India for conduct of political parties and candidates during elections mainly with respect to speeches, polling day, polling booths, election manifestos, processions, and general conduct.
     """
     return context

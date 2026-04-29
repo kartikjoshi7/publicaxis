@@ -2,7 +2,8 @@
 # Backend (Python)
 # ------------------
 backend/venv/
-backend/__pycache__/
+__pycache__/
+.firebase/
 *.pyc
 *.pyo
 *.pyd

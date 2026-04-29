@@ -7,7 +7,11 @@ app = FastAPI(title="PublicAxis Backend")
 # Allow CORS for all origins in production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:4200",                 # Keep local dev working
+        "https://publicaxis-2026.web.app",       # Your primary live URL
+        "https://publicaxis-2026.firebaseapp.com" # The alternative Firebase URL
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

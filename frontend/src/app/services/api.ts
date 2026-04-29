@@ -5,7 +5,7 @@ import { catchError, timeout, retry } from 'rxjs/operators';
 import { ToastService } from './toast';
 
 // Setup dynamic environment URL switching
-const BASE_URL = isDevMode() ? 'http://localhost:8000/api' : 'https://publicaxis-backend-production.run.app/api';
+const BASE_URL = isDevMode() ? 'https://publicaxis-backend-23063176487.us-central1.run.app/api' : 'https://publicaxis-backend-production.run.app/api';
 
 @Injectable({
   providedIn: 'root'

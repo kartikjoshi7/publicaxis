@@ -12,20 +12,25 @@
     <button (click)="searchCandidate()" [disabled]="loading() || !candidateId()">Scan Profile</button>
   </div>
   
-  <div *ngIf="loading()" class="radar-loading">
-    <div class="radar-spinner"></div>
-    <p>Scanning comprehensive background data...</p>
+  <div *ngIf="loading()" class="skeleton-wrapper">
+    <div class="skeleton-header"></div>
+    <div class="skeleton-text"></div>
+    <div class="skeleton-text"></div>
+    <div class="skeleton-text short"></div>
   </div>
   
   <p *ngIf="error()" class="error">⚠️ {{ error() }}</p>
 
-  <div *ngIf="profile()" class="profile-card fade-in">
+  <div *ngIf="profile()" class="profile-card fade-in result-print-area">
     <div class="card-header">
       <h3>Candidate Background Summary</h3>
-      <span class="badge verified">Verified by AI</span>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <span class="badge verified">Verified by AI</span>
+        <button class="export-btn" (click)="printReport()">📄 Export PDF</button>
+      </div>
     </div>
     <div class="profile-content">
-      <pre>{{ profile() }}</pre>
+      <markdown [data]="profile()"></markdown>
     </div>
   </div>
 </div>

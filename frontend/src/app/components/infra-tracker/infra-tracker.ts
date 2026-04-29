@@ -1,11 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MarkdownModule } from 'ngx-markdown';
 import { Api } from '../../services/api';
 
 @Component({
   selector: 'app-infra-tracker',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MarkdownModule],
   templateUrl: './infra-tracker.html',
   styleUrls: ['./infra-tracker.css']
 })

@@ -1,12 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MarkdownModule } from 'ngx-markdown';
 import { Api } from '../../services/api';
 
 @Component({
   selector: 'app-kyc-radar',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MarkdownModule],
   templateUrl: './kyc-radar.html',
   styleUrls: ['./kyc-radar.css']
 })
@@ -33,5 +34,9 @@ export class KycRadar {
         this.loading.set(false);
       }
     });
+  }
+
+  printReport() {
+    window.print();
   }
 }

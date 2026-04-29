@@ -7,6 +7,7 @@ router = APIRouter(tags=["Omni-Civic Copilot"])
 
 class ChatRequest(BaseModel):
     query: str
+    language: str = "English"
 
 class ChatResponse(BaseModel):
     response: str
@@ -19,7 +20,8 @@ def copilot_chat(request: ChatRequest):
     # Generate secured, grounded response
     ai_response = generate_copilot_response(
         user_query=request.query, 
-        civic_context=civic_context
+        civic_context=civic_context,
+        language=request.language
     )
     
     return ChatResponse(response=ai_response)

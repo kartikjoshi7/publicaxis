@@ -5,33 +5,37 @@
       <span class="badge audio-badge">🎙️ Hyper-Local Audio</span>
     </div>
     <div class="header-controls">
-      <select class="lang-select" [ngModel]="selectedLang()" (ngModelChange)="selectedLang.set($event)" title="Select Language">
+      <select class="lang-select" [ngModel]="selectedLang()" (ngModelChange)="onLanguageChange($event)" title="Select Language">
         <option *ngFor="let lang of languages" [value]="lang.code">{{ lang.name }}</option>
       </select>
-      <button class="audio-toggle" (click)="toggleAudio()" [title]="isAudioEnabled() ? 'Mute AI Voice' : 'Unmute AI Voice'">
+      <button class="audio-toggle" (click)="toggleAudio()" [title]="isAudioEnabled() ? 'Mute AI Voice' : 'Unmute AI Voice'" aria-label="Toggle AI Voice">
         {{ isAudioEnabled() ? '🔊 Enabled' : '🔇 Muted' }}
       </button>
     </div>
   </div>
   
-  <div class="chat-history">
+  <div class="chat-history" (scroll)="checkScroll()">
     <div *ngIf="messages().length === 0" class="empty-state">
       Ask the Omni-Civic Copilot about election procedures via Text or Voice!
     </div>
     <div *ngFor="let msg of messages()" [ngClass]="msg.role === 'user' ? 'user-msg' : 'ai-msg'">
-      <strong>{{ msg.role === 'user' ? 'You' : 'Copilot' }}:</strong>
+      <div class="msg-header">
+        <strong>{{ msg.role === 'user' ? 'You' : 'Copilot' }}:</strong>
+        <button *ngIf="msg.role === 'ai'" class="copy-btn" (click)="copyToClipboard(msg.text)" aria-label="Copy to Clipboard">📋 Copy</button>
+      </div>
       <markdown [data]="msg.text"></markdown>
     </div>
     <div *ngIf="loading()" class="loading">Copilot is generating response...</div>
   </div>
   
   <div class="chat-input-wrapper">
+    <button class="scroll-bottom-btn" [class.show]="showScrollButton()" (click)="scrollToBottom()" aria-label="Scroll to Bottom">⬇️ Scroll to Bottom</button>
     <div class="chat-input">
-      <input type="text" [(ngModel)]="query" placeholder="Ask a civic question (e.g. Can I vote without an Epic card?)" (keyup.enter)="sendMessage()" />
-      <button class="mic-btn" (click)="toggleListening()" [class.listening]="isListening()" title="Tap to Speak">
+      <input type="text" [(ngModel)]="query" placeholder="Ask a civic question (e.g. Can I vote without an Epic card?)" (keyup.enter)="sendMessage()" aria-label="Chat input" />
+      <button class="mic-btn" (click)="toggleListening()" [class.listening]="isListening()" title="Tap to Speak" aria-label="Microphone">
         <span class="icon">🎤</span>
       </button>
-      <button class="send-btn" (click)="sendMessage()" [disabled]="loading() || !query()">Send</button>
+      <button class="send-btn" (click)="sendMessage()" [disabled]="loading() || !query()" aria-label="Send message">Send</button>
     </div>
     <div *ngIf="isListening()" class="listening-indicator">Listening... Speak now.</div>
   </div>

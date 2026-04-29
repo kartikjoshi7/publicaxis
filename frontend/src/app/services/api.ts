@@ -9,8 +9,8 @@ export class Api {
   private baseUrl = 'http://localhost:8000/api';
   private http = inject(HttpClient);
 
-  sendChatMessage(query: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/chat`, { query });
+  sendChatMessage(query: string, language: string = 'English'): Observable<any> {
+    return this.http.post(`${this.baseUrl}/chat`, { query, language });
   }
 
   validateForm(file: File): Observable<any> {

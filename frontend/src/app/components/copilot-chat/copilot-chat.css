@@ -12,9 +12,15 @@
 .empty-state { text-align: center; color: #94a3b8; font-style: italic; margin-top: 50px; }
 .user-msg { background: #e0f2fe; padding: 15px; border-radius: 12px 12px 0 12px; align-self: flex-end; max-width: 80%; border: 1px solid #bae6fd; animation: fadeInMsg 0.3s ease-out; }
 .ai-msg { background: #f8fafc; padding: 15px; border-radius: 12px 12px 12px 0; align-self: flex-start; max-width: 80%; border: 1px solid #e2e8f0; animation: fadeInMsg 0.3s ease-out; }
+.msg-header { display: flex; justify-content: space-between; align-items: center; }
+.copy-btn { background: none; border: none; cursor: pointer; color: #64748b; font-size: 0.85rem; padding: 4px 8px; border-radius: 4px; transition: background 0.2s; }
+.copy-btn:hover { background: #e2e8f0; color: #0f172a; }
 .user-msg markdown, .ai-msg markdown { display: block; margin-top: 5px; line-height: 1.6; word-break: break-word; }
 
 .chat-input-wrapper { display: flex; flex-direction: column; gap: 8px; }
+.scroll-bottom-btn { background: white; border: 1px solid #cbd5e1; border-radius: 20px; padding: 5px 15px; font-size: 0.85rem; cursor: pointer; align-self: center; margin-bottom: 5px; color: #475569; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: opacity 0.3s ease, transform 0.3s ease; opacity: 0; pointer-events: none; transform: translateY(10px); }
+.scroll-bottom-btn.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.scroll-bottom-btn:hover { background: #f8fafc; }
 .chat-input { display: flex; gap: 10px; align-items: stretch; }
 .chat-input input { flex: 1; padding: 14px 18px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; outline: none; transition: all 0.3s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.05) inset; }
 .chat-input input:focus { border-color: #38bdf8; box-shadow: 0 0 0 4px rgba(56,189,248,0.25), 0 1px 2px rgba(0,0,0,0.05) inset; }

@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MarkdownModule } from 'ngx-markdown';
@@ -21,6 +21,7 @@ export class CopilotChat implements OnInit, OnDestroy {
   isAudioEnabled = signal(true);
   isListening = signal(false);
   usedMicrophone = signal(false);
+  showScrollButton = signal(false);
   
   languages = [
     { code: 'en-IN', name: 'English' },
@@ -36,7 +37,16 @@ export class CopilotChat implements OnInit, OnDestroy {
   private recognition: any = null;
 
   ngOnInit() {
+    const savedLang = localStorage.getItem('copilot_lang');
+    if (savedLang) {
+      this.selectedLang.set(savedLang);
+    }
     this.initSpeechRecognition();
+  }
+
+  onLanguageChange(lang: string) {
+    this.selectedLang.set(lang);
+    localStorage.setItem('copilot_lang', lang);
   }
 
   ngOnDestroy() {
@@ -121,7 +131,9 @@ export class CopilotChat implements OnInit, OnDestroy {
     this.query.set('');
     this.loading.set(true);
 
-    this.api.sendChatMessage(userQuery).subscribe({
+    const langName = this.languages.find(l => l.code === this.selectedLang())?.name || 'English';
+
+    this.api.sendChatMessage(userQuery, langName).subscribe({
       next: (res: any) => {
         const responseText = res.response;
         this.messages.update(m => [...m, {role: 'ai', text: responseText}]);
@@ -138,5 +150,28 @@ export class CopilotChat implements OnInit, OnDestroy {
         this.loading.set(false);
       }
     });
+  }
+
+  copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text);
+  }
+
+  checkScroll() {
+    const container = document.querySelector('.chat-history');
+    if (container) {
+      const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 50;
+      this.showScrollButton.set(!isAtBottom);
+    }
+  }
+
+  ngAfterViewChecked() {
+    this.checkScroll();
+  }
+
+  scrollToBottom() {
+    const history = document.querySelector('.chat-history');
+    if (history) {
+      history.scrollTop = history.scrollHeight;
+    }
   }
 }

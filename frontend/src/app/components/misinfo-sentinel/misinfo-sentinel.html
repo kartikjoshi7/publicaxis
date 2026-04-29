@@ -37,7 +37,11 @@
       <h4>Fact-Check Breakdown</h4>
       <ul>
         <li *ngIf="factCheckResult().fact_check_breakdown?.length === 0">No breakdown available.</li>
-        <li *ngFor="let breakdown of factCheckResult().fact_check_breakdown">💡 {{ breakdown }}</li>
+        <li *ngFor="let breakdown of factCheckResult().fact_check_breakdown">
+          <div style="display: flex; gap: 8px;">
+            <span>💡</span> <markdown [data]="breakdown"></markdown>
+          </div>
+        </li>
       </ul>
     </div>
   </div>

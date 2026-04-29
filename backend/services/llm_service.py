@@ -84,7 +84,7 @@ def analyze_document(image_bytes: bytes, mime_type: str) -> str:
         logger.error(f"Error calling Vertex AI for vision: {e}")
         return '{"error": "Failed to analyze document", "missing_fields": [], "formatting_errors": []}'
 
-def generate_copilot_response(user_query: str, civic_context: str) -> str:
+def generate_copilot_response(user_query: str, civic_context: str, language: str = "English") -> str:
     if not is_initialized:
         logger.error("Vertex AI is not initialized.")
         return "Error: AI not initialized"
@@ -94,9 +94,9 @@ def generate_copilot_response(user_query: str, civic_context: str) -> str:
         "While you must prioritize the provided Civic Context for specific Indian Election rules and procedures, "
         "you ARE PERMITTED to use your internal knowledge to provide general, unbiased definitions of civic and electoral terms. "
         "Continue to strictly decline any political debates, opinions on political parties, or candidate endorsements.\n\n"
-        "CRITICAL MULTI-LINGUAL DIRECTIVE: You must automatically detect the language "
-        "of the user's query. You must translate your final response and reply entirely "
-        "in that EXACT same language, even for general definitions. When using the Civic Context, strictly pull facts without inventing rules.\n\n"
+        f"CRITICAL MULTI-LINGUAL DIRECTIVE: You must respond in the language specified in the request: {language}. "
+        "If no language is specified, use the language of the user query. Do not default to Hindi if the user is typing in English. "
+        "When using the Civic Context, strictly pull facts without inventing rules.\n\n"
         f"CIVIC CONTEXT:\n{civic_context}"
     )
     

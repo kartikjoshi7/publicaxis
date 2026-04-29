@@ -31,7 +31,7 @@
     
     <div class="metric-card full-width">
       <span class="label">AI Repair Recommendation</span>
-      <p class="value-text">{{ reportResult().repair_recommendation }}</p>
+      <div class="value-text"><markdown [data]="reportResult().repair_recommendation"></markdown></div>
     </div>
 
     <div class="metric-card location-card">

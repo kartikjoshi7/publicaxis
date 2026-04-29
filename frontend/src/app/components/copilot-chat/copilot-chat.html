@@ -1,16 +1,33 @@
 <div class="chat-container">
+  <div class="chat-header">
+    <div class="header-titles">
+      <h3 style="margin: 0;">Omni-Civic Copilot</h3>
+      <span class="badge audio-badge">🎙️ Hyper-Local Audio</span>
+    </div>
+    <button class="audio-toggle" (click)="toggleAudio()" [title]="isAudioEnabled() ? 'Mute AI Voice' : 'Unmute AI Voice'">
+      {{ isAudioEnabled() ? '🔊 Enabled' : '🔇 Muted' }}
+    </button>
+  </div>
+  
   <div class="chat-history">
     <div *ngIf="messages().length === 0" class="empty-state">
-      Ask the Omni-Civic Copilot about election procedures!
+      Ask the Omni-Civic Copilot about election procedures via Text or Voice!
     </div>
     <div *ngFor="let msg of messages()" [ngClass]="msg.role === 'user' ? 'user-msg' : 'ai-msg'">
       <strong>{{ msg.role === 'user' ? 'You' : 'Copilot' }}:</strong>
       <p>{{ msg.text }}</p>
     </div>
-    <div *ngIf="loading()" class="loading">Copilot is typing...</div>
+    <div *ngIf="loading()" class="loading">Copilot is generating response...</div>
   </div>
-  <div class="chat-input">
-    <input type="text" [(ngModel)]="query" placeholder="Ask a civic question (e.g. Can I vote without an Epic card?)" (keyup.enter)="sendMessage()" />
-    <button (click)="sendMessage()" [disabled]="loading() || !query()">Send</button>
+  
+  <div class="chat-input-wrapper">
+    <div class="chat-input">
+      <input type="text" [(ngModel)]="query" placeholder="Ask a civic question (e.g. Can I vote without an Epic card?)" (keyup.enter)="sendMessage()" />
+      <button class="mic-btn" (click)="toggleListening()" [class.listening]="isListening()" title="Tap to Speak">
+        <span class="icon">🎤</span>
+      </button>
+      <button class="send-btn" (click)="sendMessage()" [disabled]="loading() || !query()">Send</button>
+    </div>
+    <div *ngIf="isListening()" class="listening-indicator">Listening... Speak now.</div>
   </div>
 </div>

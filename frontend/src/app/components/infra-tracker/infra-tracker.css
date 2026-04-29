@@ -1,0 +1,32 @@
+.tracker-container { border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; max-width: 800px; margin: 0 auto; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+.header { margin-bottom: 25px; text-align: center; }
+.header h2 { margin: 0 0 10px 0; color: #0f172a; }
+.header p { color: #64748b; margin: 0; }
+.upload-zone { border: 2px dashed #f59e0b; padding: 40px 20px; text-align: center; border-radius: 12px; margin: 20px 0; background: #fffbeb; transition: background-color 0.2s; position: relative; }
+.upload-zone:hover:not(.disabled) { background: #fef3c7; cursor: pointer; }
+.upload-zone.disabled { opacity: 0.6; cursor: not-allowed; border-color: #94a3b8; background: #f1f5f9; }
+.upload-zone input[type="file"] { position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer; }
+.upload-zone input[type="file"]:disabled { cursor: not-allowed; }
+.upload-label { display: flex; flex-direction: column; align-items: center; gap: 10px; pointer-events: none; }
+.icon { font-size: 3rem; }
+.text { font-size: 1.1rem; color: #b45309; font-weight: 500; }
+.loading { color: #d97706; font-weight: 500; margin-top: 15px; animation: pulse 1.5s infinite; }
+.error { color: #ef4444; margin-top: 15px; background: #fef2f2; padding: 10px; border-radius: 6px; }
+
+.results { margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+.results h3 { color: #0f172a; margin-top: 0; margin-bottom: 20px; text-align: center; font-size: 1.4rem; }
+
+.report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+.metric-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 10px; border-left: 5px solid #cbd5e1; }
+.metric-card.full-width { margin-bottom: 20px; }
+.metric-card.category { border-left-color: #3b82f6; }
+.metric-card.location-card { border-left-color: #8b5cf6; }
+
+.label { font-size: 0.85rem; color: #64748b; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
+.value { font-size: 1.5rem; font-weight: bold; color: #1e293b; }
+.value-text { font-size: 1.1rem; color: #334155; margin: 0; line-height: 1.5; }
+.mono { font-family: monospace; font-size: 1.1rem; color: #475569; margin: 0; background: #e2e8f0; padding: 5px 10px; border-radius: 4px; display: inline-block; }
+
+.fade-in { animation: fadeIn 0.4s ease-in; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }

@@ -4,8 +4,10 @@ An enterprise-grade E-Governance platform designed to enhance citizen engagement
 
 ## 🚀 Flagship Features
 
-* **💬 Omni-Civic Copilot**: A secure, RAG-powered chat assistant that strictly answers citizen queries based on official Indian Election Commission rules. It is specifically guardrailed to decline non-election political debates.
+* **💬 Omni-Civic Copilot (Audio Enabled)**: A secure, RAG-powered chat assistant that strictly answers citizen queries based on official Indian Election Commission rules. It features native **Hyper-Local Audio Governance** (Voice-to-Text & Text-to-Voice) for maximal accessibility.
 * **👁️ Form 6 Vision Validator**: An automated AI document validator that processes uploaded Form 6 images, instantly identifying missing required fields and formatting errors using Gemini Vision.
+* **🛡️ WhatsApp Misinformation Sentinel**: An advanced AI fact-checker that extracts claims from uploaded screenshots (e.g. social media forwards) and assigns a precise Risk Score alongside a detailed breakdown of truthfulness.
+* **🚧 Smart City Issue Tracker**: A predictive infrastructure tool that captures broken infrastructure photos alongside real-time GPS coordinates via the browser's geolocation API, generating an instant AI Municipal Report Card.
 * **📡 KYC Radar**: A real-time background scanning tool that generates structured, factual AI summaries of political candidates based on their ID.
 
 ## 🏗️ Architecture

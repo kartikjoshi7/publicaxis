@@ -114,3 +114,75 @@ def generate_copilot_response(user_query: str, civic_context: str) -> str:
         print(f"🔥 COPILOT ERROR: {str(e)}")
         logger.error(f"Error calling Vertex AI for copilot: {e}")
         return "I apologize, but I am currently experiencing technical difficulties processing your request."
+
+def analyze_misinformation(image_bytes: bytes, mime_type: str) -> str:
+    if not is_initialized:
+        logger.error("Vertex AI is not initialized.")
+        return '{"error": "AI not initialized", "risk_score": 0, "is_fake": false, "extracted_claims": [], "fact_check_breakdown": []}'
+        
+    system_prompt = (
+        "You are an expert fact-checker and misinformation analyst. "
+        "Analyze the uploaded image (e.g., a WhatsApp forward or social media post). "
+        "Extract the text and claims from the image, and determine if it is misinformation. "
+        "Return a strict JSON object containing exactly: "
+        "'risk_score' (number 0-100 where 100 is highly likely fake), "
+        "'is_fake' (boolean), "
+        "'extracted_claims' (list of strings representing the main claims), "
+        "and 'fact_check_breakdown' (list of strings explaining why the claims are true or false)."
+    )
+    
+    try:
+        model = GenerativeModel(
+            "gemini-2.5-flash",
+            system_instruction=[system_prompt]
+        )
+        
+        part = Part.from_data(data=image_bytes, mime_type=mime_type)
+        logger.info(f"Analyzing misinformation image of type {mime_type}")
+        
+        response = model.generate_content(
+            [part, "Analyze this image for misinformation and return the requested JSON."],
+            generation_config={"response_mime_type": "application/json"}
+        )
+        
+        logger.info("Successfully received misinformation analysis from Vertex AI")
+        return response.text
+    except Exception as e:
+        print(f"🔥 MISINFO ERROR: {str(e)}")
+        logger.error(f"Error calling Vertex AI for misinformation analysis: {e}")
+        return '{"error": "Failed to analyze document", "risk_score": 0, "is_fake": false, "extracted_claims": [], "fact_check_breakdown": []}'
+
+def evaluate_infrastructure(image_bytes: bytes, mime_type: str) -> str:
+    if not is_initialized:
+        logger.error("Vertex AI is not initialized.")
+        return '{"error": "AI not initialized", "issue_category": "Unknown", "severity_score": 0, "repair_recommendation": "None"}'
+        
+    system_prompt = (
+        "You are an expert municipal engineer analyzing infrastructure issues. "
+        "Analyze the uploaded image of broken infrastructure (e.g., potholes, broken streetlights). "
+        "Return a strict JSON object containing exactly: "
+        "'issue_category' (string, e.g., Pothole, Broken Streetlight, Water Leak), "
+        "'severity_score' (number 1-10 where 10 is critically dangerous), "
+        "and 'repair_recommendation' (string explaining how to fix it temporarily or permanently)."
+    )
+    
+    try:
+        model = GenerativeModel(
+            "gemini-2.5-flash",
+            system_instruction=[system_prompt]
+        )
+        
+        part = Part.from_data(data=image_bytes, mime_type=mime_type)
+        logger.info(f"Analyzing infrastructure image of type {mime_type}")
+        
+        response = model.generate_content(
+            [part, "Analyze this infrastructure issue and return the requested JSON."],
+            generation_config={"response_mime_type": "application/json"}
+        )
+        
+        logger.info("Successfully received infrastructure analysis from Vertex AI")
+        return response.text
+    except Exception as e:
+        print(f"🔥 INFRASTRUCTURE ERROR: {str(e)}")
+        logger.error(f"Error calling Vertex AI for infrastructure analysis: {e}")
+        return '{"error": "Failed to analyze infrastructure", "issue_category": "Error", "severity_score": 0, "repair_recommendation": "Failed to process image"}'

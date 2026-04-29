@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MarkdownModule } from 'ngx-markdown';
 import { Api } from '../../services/api';
+import { ToastService } from '../../services/toast';
 
 @Component({
   selector: 'app-kyc-radar',
@@ -13,6 +14,7 @@ import { Api } from '../../services/api';
 })
 export class KycRadar {
   private api = inject(Api);
+  private toast = inject(ToastService);
   candidateId = signal('');
   profile = signal<any>(null);
   loading = signal(false);
@@ -28,6 +30,7 @@ export class KycRadar {
       next: (res: any) => {
         this.profile.set(res.profile);
         this.loading.set(false);
+        this.toast.success('Candidate Profile Retrieved');
       },
       error: (err) => {
         this.error.set('Failed to fetch profile: ' + (err.error?.detail || err.message));

@@ -9,7 +9,14 @@
       <span class="search-icon">🔍</span>
       <input type="text" [(ngModel)]="candidateId" placeholder="Enter Candidate Name or ID..." (keyup.enter)="searchCandidate()" />
     </div>
-    <button (click)="searchCandidate()" [disabled]="loading() || !candidateId()">Scan Profile</button>
+    <button class="btn-primary" (click)="searchCandidate()" [disabled]="loading() || !candidateId()">Scan Profile</button>
+  </div>
+
+  <!-- Empty State Illustration -->
+  <div *ngIf="!profile() && !loading() && !error()" class="empty-state-card">
+    <div class="empty-icon">📡</div>
+    <p class="empty-title">Ready to Scan</p>
+    <p class="empty-text">Enter a candidate name or ID to initiate a real-time background scan.</p>
   </div>
   
   <div *ngIf="loading()" class="skeleton-wrapper">

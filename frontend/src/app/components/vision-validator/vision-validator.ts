@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Api } from '../../services/api';
+import { ToastService } from '../../services/toast';
 
 @Component({
   selector: 'app-vision-validator',
@@ -11,10 +12,12 @@ import { Api } from '../../services/api';
 })
 export class VisionValidator {
   private api = inject(Api);
+  private toast = inject(ToastService);
   validationResult = signal<any>(null);
   loading = signal(false);
   error = signal('');
   isFlashOn = signal(false);
+  isDragActive = signal(false);
 
   async toggleFlash() {
     try {
@@ -25,10 +28,10 @@ export class VisionValidator {
         this.isFlashOn.set(!this.isFlashOn());
         track.applyConstraints({ advanced: [{ torch: this.isFlashOn() }] as any });
       } else {
-        alert("Flash/Torch is not supported on this device's camera.");
+        this.toast.info("Flash/Torch is not supported on this device's camera.");
       }
     } catch (err) {
-      alert("Could not access camera for flash: " + err);
+      this.toast.error("Could not access camera for flash.");
     }
   }
 
@@ -66,27 +69,55 @@ export class VisionValidator {
     });
   }
 
+  onDragEnter(event: DragEvent) {
+    event.preventDefault();
+    this.isDragActive.set(true);
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    this.isDragActive.set(false);
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    this.isDragActive.set(false);
+    const file = event.dataTransfer?.files[0];
+    if (file) {
+      this.processFile(file);
+    }
+  }
+
   async onFileSelected(event: any) {
     const originalFile: File = event.target.files[0];
     if (originalFile) {
-      this.loading.set(true);
-      this.error.set('');
-      this.validationResult.set(null);
-      this.triggerHaptic();
-      
-      const file = await this.compressImage(originalFile);
-      
-      this.api.validateForm(file).subscribe({
-        next: (res: any) => {
-          this.validationResult.set(res.validation_result);
-          this.loading.set(false);
-        },
-        error: (err) => {
-          this.error.set('Validation failed: ' + (err.error?.detail || err.message));
-          this.loading.set(false);
-        }
-      });
+      this.processFile(originalFile);
     }
+  }
+
+  private async processFile(originalFile: File) {
+    this.loading.set(true);
+    this.error.set('');
+    this.validationResult.set(null);
+    this.triggerHaptic();
+    
+    const file = await this.compressImage(originalFile);
+    
+    this.api.validateForm(file).subscribe({
+      next: (res: any) => {
+        this.validationResult.set(res.validation_result);
+        this.loading.set(false);
+        this.toast.success('Document Successfully Analyzed');
+      },
+      error: (err) => {
+        this.error.set('Validation failed: ' + (err.error?.detail || err.message));
+        this.loading.set(false);
+      }
+    });
   }
 
   triggerHaptic() {

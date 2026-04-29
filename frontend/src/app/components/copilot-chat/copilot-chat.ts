@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MarkdownModule } from 'ngx-markdown';
 import { Api } from '../../services/api';
+import { ToastService } from '../../services/toast';
 
 @Component({
   selector: 'app-copilot-chat',
@@ -13,6 +14,7 @@ import { Api } from '../../services/api';
 })
 export class CopilotChat implements OnInit, OnDestroy {
   private api = inject(Api);
+  private toast = inject(ToastService);
   query = signal('');
   messages = signal<{role: 'user' | 'ai', text: string}[]>([]);
   loading = signal(false);
@@ -150,6 +152,7 @@ export class CopilotChat implements OnInit, OnDestroy {
       error: (err) => {
         this.messages.update(m => [...m, {role: 'ai', text: 'Error connecting to the Copilot.'}]);
         this.loading.set(false);
+        this.toast.error('Connection interrupted. Please try again.');
       }
     });
   }

@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MarkdownModule } from 'ngx-markdown';
 import { Api } from '../../services/api';
+import { ToastService } from '../../services/toast';
 
 @Component({
   selector: 'app-infra-tracker',
@@ -12,11 +13,13 @@ import { Api } from '../../services/api';
 })
 export class InfraTracker {
   private api = inject(Api);
+  private toast = inject(ToastService);
   reportResult = signal<any>(null);
   loading = signal(false);
   error = signal('');
   locationStatus = signal('Waiting for image upload...');
   isFlashOn = signal(false);
+  isDragActive = signal(false);
 
   async toggleFlash() {
     try {
@@ -27,10 +30,10 @@ export class InfraTracker {
         this.isFlashOn.set(!this.isFlashOn());
         track.applyConstraints({ advanced: [{ torch: this.isFlashOn() }] as any });
       } else {
-        alert("Flash/Torch is not supported on this device's camera.");
+        this.toast.info("Flash/Torch is not supported on this device's camera.");
       }
     } catch (err) {
-      alert("Could not access camera for flash: " + err);
+      this.toast.error("Could not access camera for flash.");
     }
   }
 
@@ -68,56 +71,84 @@ export class InfraTracker {
     });
   }
 
+  onDragEnter(event: DragEvent) {
+    event.preventDefault();
+    this.isDragActive.set(true);
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    this.isDragActive.set(false);
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    this.isDragActive.set(false);
+    const file = event.dataTransfer?.files[0];
+    if (file) {
+      this.processFile(file);
+    }
+  }
+
   async onFileSelected(event: any) {
     const originalFile: File = event.target.files[0];
     if (originalFile) {
-      this.loading.set(true);
-      this.error.set('');
-      this.reportResult.set(null);
-      this.locationStatus.set('Compressing image for fast upload...');
-      this.triggerHaptic();
+      this.processFile(originalFile);
+    }
+  }
 
-      const file = await this.compressImage(originalFile);
-      this.locationStatus.set('Acquiring GPS coordinates...');
+  private async processFile(originalFile: File) {
+    this.loading.set(true);
+    this.error.set('');
+    this.reportResult.set(null);
+    this.locationStatus.set('Compressing image for fast upload...');
+    this.triggerHaptic();
 
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            this.locationStatus.set('GPS Acquired. Analyzing image via Gemini Vision...');
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            
-            this.api.reportIssue(file, lat, lng).subscribe({
-              next: (res: any) => {
-                this.reportResult.set(res);
-                this.loading.set(false);
-                this.locationStatus.set('Analysis Complete.');
-              },
-              error: (err) => {
-                this.error.set('Failed to submit report: ' + (err.error?.detail || err.message));
-                this.loading.set(false);
-                this.locationStatus.set('Error.');
-              }
-            });
-          },
-          (geoError) => {
-            this.error.set('Location access denied or unavailable. Please enable GPS.');
-            this.loading.set(false);
-            this.locationStatus.set('Error.');
-          }
-        );
-      } else {
-        this.error.set('Geolocation is not supported by your browser.');
-        this.loading.set(false);
-        this.locationStatus.set('Error.');
-      }
+    const file = await this.compressImage(originalFile);
+    this.locationStatus.set('Acquiring GPS coordinates...');
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.locationStatus.set('GPS Acquired. Analyzing image via Gemini Vision...');
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          
+          this.api.reportIssue(file, lat, lng).subscribe({
+            next: (res: any) => {
+              this.reportResult.set(res);
+              this.loading.set(false);
+              this.locationStatus.set('Analysis Complete.');
+              this.toast.success('Infrastructure Audit Complete');
+            },
+            error: (err) => {
+              this.error.set('Failed to submit report: ' + (err.error?.detail || err.message));
+              this.loading.set(false);
+              this.locationStatus.set('Error.');
+            }
+          });
+        },
+        (geoError) => {
+          this.error.set('Location access denied or unavailable. Please enable GPS.');
+          this.loading.set(false);
+          this.locationStatus.set('Error.');
+        }
+      );
+    } else {
+      this.error.set('Geolocation is not supported by your browser.');
+      this.loading.set(false);
+      this.locationStatus.set('Error.');
     }
   }
 
   getSeverityColor(score: number): string {
-    if (score < 4) return '#10b981'; // Green
-    if (score < 8) return '#f59e0b'; // Yellow
-    return '#ef4444'; // Red
+    if (score < 4) return '#10b981';
+    if (score < 8) return '#f59e0b';
+    return '#ef4444';
   }
 
   triggerHaptic() {

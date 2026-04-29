@@ -7,7 +7,9 @@
     </button>
   </div>
   
-  <div class="upload-zone" [class.disabled]="loading()">
+  <div class="upload-zone" [class.disabled]="loading()" [class.drag-active]="isDragActive()"
+       (dragenter)="onDragEnter($event)" (dragover)="onDragOver($event)"
+       (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
     <input type="file" accept="image/*" id="infraUpload" (change)="onFileSelected($event)" [disabled]="loading()" capture="environment" />
     <label for="infraUpload" class="upload-label">
       <span class="icon">📸</span>

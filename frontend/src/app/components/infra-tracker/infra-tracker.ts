@@ -16,13 +16,68 @@ export class InfraTracker {
   loading = signal(false);
   error = signal('');
   locationStatus = signal('Waiting for image upload...');
+  isFlashOn = signal(false);
 
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
-    if (file) {
+  async toggleFlash() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      const track = stream.getVideoTracks()[0];
+      const capabilities = track.getCapabilities() as any;
+      if (capabilities.torch) {
+        this.isFlashOn.set(!this.isFlashOn());
+        track.applyConstraints({ advanced: [{ torch: this.isFlashOn() }] as any });
+      } else {
+        alert("Flash/Torch is not supported on this device's camera.");
+      }
+    } catch (err) {
+      alert("Could not access camera for flash: " + err);
+    }
+  }
+
+  async compressImage(file: File): Promise<File> {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 1080;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          canvas.toBlob((blob) => {
+            if (blob) {
+              resolve(new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() }));
+            } else {
+              resolve(file);
+            }
+          }, 'image/jpeg', 0.7);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async onFileSelected(event: any) {
+    const originalFile: File = event.target.files[0];
+    if (originalFile) {
       this.loading.set(true);
       this.error.set('');
       this.reportResult.set(null);
+      this.locationStatus.set('Compressing image for fast upload...');
+      this.triggerHaptic();
+
+      const file = await this.compressImage(originalFile);
       this.locationStatus.set('Acquiring GPS coordinates...');
 
       if (navigator.geolocation) {
@@ -63,5 +118,11 @@ export class InfraTracker {
     if (score < 4) return '#10b981'; // Green
     if (score < 8) return '#f59e0b'; // Yellow
     return '#ef4444'; // Red
+  }
+
+  triggerHaptic() {
+    if (navigator.vibrate) {
+      navigator.vibrate(10);
+    }
   }
 }

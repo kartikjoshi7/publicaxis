@@ -2,6 +2,9 @@
   <div class="header">
     <h2>Form 6 Vision Validator</h2>
     <p>Upload a Form 6 image to auto-validate missing fields and identify formatting errors.</p>
+    <button class="flash-btn" (click)="toggleFlash()">
+      {{ isFlashOn() ? '🔦 Turn Flash Off' : '🔦 Turn Flash On' }}
+    </button>
   </div>
   
   <div class="upload-zone" [class.disabled]="loading()">

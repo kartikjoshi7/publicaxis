@@ -1,5 +1,5 @@
 .sentinel-container { border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; max-width: 800px; margin: 0 auto; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-.header { margin-bottom: 25px; text-align: center; }
+.header { margin-bottom: 2rem; text-align: center; }
 .header h2 { margin: 0 0 10px 0; color: #0f172a; }
 .header p { color: #64748b; margin: 0; }
 .upload-zone { border: 2px dashed #8b5cf6; padding: 40px 20px; text-align: center; border-radius: 12px; margin: 20px 0; background: #f5f3ff; transition: background-color 0.2s; position: relative; }
@@ -30,3 +30,18 @@
 .fade-in { animation: fadeIn 0.4s ease-in; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
+@media (max-width: 768px) {
+  .sentinel-container { border: none; border-radius: 0; padding: 0; box-shadow: none; background: transparent; max-width: 100%; }
+  .header { margin-bottom: 1.25rem; }
+  .header h2 { font-size: 1.1rem; }
+  .header p { font-size: 0.85rem; }
+  .upload-zone { padding: 30px 16px; margin: 12px 0; border-radius: 16px; }
+  .icon { font-size: 2.5rem; }
+  .text { font-size: 0.95rem; }
+  .results { gap: 12px; }
+  .risk-meter { padding: 20px 16px; }
+  .score-display { font-size: 3rem; }
+  .result-box { padding: 16px; }
+  .result-box li { padding: 8px; font-size: 0.9rem; }
+}

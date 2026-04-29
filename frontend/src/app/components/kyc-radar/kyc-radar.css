@@ -1,5 +1,5 @@
 .kyc-container { border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; max-width: 800px; margin: 0 auto; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-.header { margin-bottom: 25px; text-align: center; }
+.header { margin-bottom: 2rem; text-align: center; }
 .header h2 { margin: 0 0 10px 0; color: #0f172a; }
 .header p { color: #64748b; margin: 0; }
 .search-bar { display: flex; gap: 15px; margin-bottom: 30px; }
@@ -30,3 +30,18 @@
 
 .fade-in { animation: fadeIn 0.4s ease-in; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 768px) {
+  .kyc-container { border: none; border-radius: 0; padding: 0; box-shadow: none; background: transparent; max-width: 100%; }
+  .header { margin-bottom: 1.25rem; }
+  .header h2 { font-size: 1.1rem; }
+  .header p { font-size: 0.85rem; }
+  .search-bar { flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .search-bar button { padding: 14px; border-radius: 12px; width: 100%; }
+  .input-wrapper input { padding: 14px 14px 14px 42px; border-radius: 12px; font-size: 0.95rem; }
+  .profile-card { border-radius: 12px; margin-top: 16px; }
+  .card-header { padding: 16px; flex-wrap: wrap; gap: 8px; }
+  .card-header h3 { font-size: 1rem; }
+  .profile-content { padding: 16px; }
+  .profile-content markdown { font-size: 0.9rem; }
+}

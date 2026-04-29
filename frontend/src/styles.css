@@ -1,1 +1,47 @@
-/* You can add global styles to this file, and also import other style files */
+/* ═══════════════════════════════════════════
+   PublicAxis — Global Styles (Unscoped)
+   These styles target html, body, and app-root
+   which MUST be in a global stylesheet to avoid
+   Angular View Encapsulation scoping issues.
+   ═══════════════════════════════════════════ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #e2e8f0;
+  color: #1e293b;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  html, body, app-root {
+    background: #ffffff !important;
+  }
+}
+
+@media print {
+  body {
+    background: white !important;
+    position: static !important;
+    overflow: visible !important;
+  }
+}

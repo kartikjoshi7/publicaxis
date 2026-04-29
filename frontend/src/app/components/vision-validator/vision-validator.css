@@ -1,7 +1,9 @@
 .vision-container { border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; max-width: 800px; margin: 0 auto; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-.header { margin-bottom: 25px; text-align: center; }
+.header { margin-bottom: 2rem; text-align: center; }
 .header h2 { margin: 0 0 10px 0; color: #0f172a; }
 .header p { color: #64748b; margin: 0; }
+.flash-btn { margin-top: 15px; background: white; color: #0f172a; border: 1px solid #cbd5e1; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: background 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.flash-btn:hover { background: #f8fafc; }
 .upload-zone { border: 2px dashed #3b82f6; padding: 40px 20px; text-align: center; border-radius: 12px; margin: 20px 0; background: #eff6ff; transition: background-color 0.2s; position: relative; }
 .upload-zone:hover:not(.disabled) { background: #dbeafe; cursor: pointer; }
 .upload-zone.disabled { opacity: 0.6; cursor: not-allowed; border-color: #94a3b8; background: #f1f5f9; }
@@ -30,3 +32,15 @@
 
 .fade-in { animation: fadeIn 0.4s ease-in; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 768px) {
+  .vision-container { border: none; border-radius: 0; padding: 0; box-shadow: none; background: transparent; max-width: 100%; }
+  .header { margin-bottom: 1.25rem; }
+  .header h2 { font-size: 1.1rem; }
+  .header p { font-size: 0.85rem; }
+  .upload-zone { padding: 30px 16px; margin: 12px 0; border-radius: 16px; }
+  .icon { font-size: 2.5rem; }
+  .text { font-size: 0.95rem; }
+  .results { gap: 12px; }
+  .result-box { padding: 16px; }
+}

@@ -22,6 +22,7 @@ export class CopilotChat implements OnInit, OnDestroy {
   isListening = signal(false);
   usedMicrophone = signal(false);
   showScrollButton = signal(false);
+  showSettingsSheet = signal(false);
   
   languages = [
     { code: 'en-IN', name: 'English' },
@@ -138,6 +139,7 @@ export class CopilotChat implements OnInit, OnDestroy {
         const responseText = res.response;
         this.messages.update(m => [...m, {role: 'ai', text: responseText}]);
         this.loading.set(false);
+        this.triggerHaptic();
         
         // Auto-read response if user initiated conversation via microphone
         if (this.usedMicrophone()) {
@@ -172,6 +174,12 @@ export class CopilotChat implements OnInit, OnDestroy {
     const history = document.querySelector('.chat-history');
     if (history) {
       history.scrollTop = history.scrollHeight;
+    }
+  }
+
+  triggerHaptic() {
+    if (navigator.vibrate) {
+      navigator.vibrate(10);
     }
   }
 }

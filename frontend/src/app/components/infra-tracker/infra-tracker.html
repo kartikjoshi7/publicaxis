@@ -2,6 +2,9 @@
   <div class="header">
     <h2>Civic Access Auditor</h2>
     <p>Upload a photo of infrastructure to instantly audit accessibility barriers at polling stations.</p>
+    <button class="flash-btn" (click)="toggleFlash()">
+      {{ isFlashOn() ? '🔦 Turn Flash Off' : '🔦 Turn Flash On' }}
+    </button>
   </div>
   
   <div class="upload-zone" [class.disabled]="loading()">

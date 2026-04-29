@@ -1,7 +1,7 @@
 <div class="dashboard-layout">
   <nav class="sidebar">
     <div class="logo">
-      <div class="logo-icon">🏛️</div>
+      <img src="favicon.png" alt="PublicAxis Logo" class="logo-img" />
       <div class="logo-text">
         <h2>PublicAxis</h2>
         <p>Enterprise E-Governance</p>
@@ -44,13 +44,31 @@
     </header>
     
     <div class="component-container">
-      <div class="component-wrapper fade-in">
-        <app-copilot-chat *ngIf="activeTab() === 'copilot'"></app-copilot-chat>
-        <app-vision-validator *ngIf="activeTab() === 'vision'"></app-vision-validator>
-        <app-misinfo-sentinel *ngIf="activeTab() === 'misinfo'"></app-misinfo-sentinel>
-        <app-infra-tracker *ngIf="activeTab() === 'infra'"></app-infra-tracker>
-        <app-kyc-radar *ngIf="activeTab() === 'kyc'"></app-kyc-radar>
+      <div class="component-wrapper">
+        <app-copilot-chat [class.active-tab]="activeTab() === 'copilot'" [class.hidden-tab]="activeTab() !== 'copilot'"></app-copilot-chat>
+        <app-vision-validator [class.active-tab]="activeTab() === 'vision'" [class.hidden-tab]="activeTab() !== 'vision'"></app-vision-validator>
+        <app-misinfo-sentinel [class.active-tab]="activeTab() === 'misinfo'" [class.hidden-tab]="activeTab() !== 'misinfo'"></app-misinfo-sentinel>
+        <app-infra-tracker [class.active-tab]="activeTab() === 'infra'" [class.hidden-tab]="activeTab() !== 'infra'"></app-infra-tracker>
+        <app-kyc-radar [class.active-tab]="activeTab() === 'kyc'" [class.hidden-tab]="activeTab() !== 'kyc'"></app-kyc-radar>
       </div>
     </div>
   </main>
+  
+  <nav class="bottom-nav-bar">
+    <div class="nav-item" [class.active]="activeTab() === 'copilot'" (click)="setTab('copilot')">
+      <span class="icon">💬</span><span>Copilot</span>
+    </div>
+    <div class="nav-item" [class.active]="activeTab() === 'vision'" (click)="setTab('vision')">
+      <span class="icon">👁️</span><span>Validator</span>
+    </div>
+    <div class="nav-item" [class.active]="activeTab() === 'misinfo'" (click)="setTab('misinfo')">
+      <span class="icon">🛡️</span><span>Sentinel</span>
+    </div>
+    <div class="nav-item" [class.active]="activeTab() === 'infra'" (click)="setTab('infra')">
+      <span class="icon">🚧</span><span>Auditor</span>
+    </div>
+    <div class="nav-item" [class.active]="activeTab() === 'kyc'" (click)="setTab('kyc')">
+      <span class="icon">📡</span><span>Radar</span>
+    </div>
+  </nav>
 </div>

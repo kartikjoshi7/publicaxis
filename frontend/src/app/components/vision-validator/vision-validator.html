@@ -23,22 +23,22 @@
     <p *ngIf="error()" class="error">⚠️ {{ error() }}</p>
   </div>
 
-  <div *ngIf="validationResult()" class="results fade-in">
+  <div *ngIf="validationResult() as result" class="results fade-in">
     <h3>Validation Results</h3>
     
     <div class="result-box missing">
       <h4>Missing Fields</h4>
       <ul>
-        <li *ngIf="validationResult().missing_fields?.length === 0" class="success-item">✅ All required fields are present.</li>
-        <li *ngFor="let field of validationResult().missing_fields">❌ {{ field }}</li>
+        <li *ngIf="result.missing_fields.length === 0" class="success-item">✅ All required fields are present.</li>
+        <li *ngFor="let field of result.missing_fields">❌ {{ field }}</li>
       </ul>
     </div>
     
     <div class="result-box formatting">
       <h4>Formatting Errors</h4>
       <ul>
-        <li *ngIf="validationResult().formatting_errors?.length === 0" class="success-item">✅ No formatting errors found.</li>
-        <li *ngFor="let error of validationResult().formatting_errors">❌ {{ error }}</li>
+        <li *ngIf="result.formatting_errors.length === 0" class="success-item">✅ No formatting errors found.</li>
+        <li *ngFor="let error of result.formatting_errors">❌ {{ error }}</li>
       </ul>
     </div>
   </div>

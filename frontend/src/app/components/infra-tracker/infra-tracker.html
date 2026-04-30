@@ -19,29 +19,29 @@
     <p *ngIf="error()" class="error">⚠️ {{ error() }}</p>
   </div>
 
-  <div *ngIf="reportResult()" class="results fade-in">
+  <div *ngIf="reportResult() as result" class="results fade-in">
     <h3>Municipal Report Card</h3>
     
     <div class="report-grid">
       <div class="metric-card category">
         <span class="label">Issue Category</span>
-        <span class="value">{{ reportResult().issue_category }}</span>
+        <span class="value">{{ result.issue_category }}</span>
       </div>
       
-      <div class="metric-card severity" [style.borderLeftColor]="getSeverityColor(reportResult().severity_score)">
+      <div class="metric-card severity" [style.borderLeftColor]="getSeverityColor(result.severity_score)">
         <span class="label">Severity (1-10)</span>
-        <span class="value" [style.color]="getSeverityColor(reportResult().severity_score)">{{ reportResult().severity_score }}/10</span>
+        <span class="value" [style.color]="getSeverityColor(result.severity_score)">{{ result.severity_score }}/10</span>
       </div>
     </div>
     
     <div class="metric-card full-width">
       <span class="label">AI Repair Recommendation</span>
-      <div class="value-text"><markdown [data]="reportResult().repair_recommendation"></markdown></div>
+      <div class="value-text"><markdown [data]="result.repair_recommendation"></markdown></div>
     </div>
 
     <div class="metric-card location-card">
       <span class="label">Logged Coordinates</span>
-      <p class="mono">{{ reportResult().location?.latitude }}, {{ reportResult().location?.longitude }}</p>
+      <p class="mono">{{ result.location.latitude }}, {{ result.location.longitude }}</p>
     </div>
   </div>
 </div>

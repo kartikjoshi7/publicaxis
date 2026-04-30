@@ -16,30 +16,30 @@
     <p *ngIf="error()" class="error">⚠️ {{ error() }}</p>
   </div>
 
-  <div *ngIf="factCheckResult()" class="results fade-in">
+  <div *ngIf="factCheckResult() as result" class="results fade-in">
     
-    <div class="risk-meter" [style.borderColor]="getRiskColor(factCheckResult().risk_score)">
-      <div class="score-display" [style.color]="getRiskColor(factCheckResult().risk_score)">
-        <span class="number">{{ factCheckResult().risk_score }}</span><span class="percent">%</span>
+    <div class="risk-meter" [style.borderColor]="getRiskColor(result.risk_score)">
+      <div class="score-display" [style.color]="getRiskColor(result.risk_score)">
+        <span class="number">{{ result.risk_score }}</span><span class="percent">%</span>
       </div>
       <div class="score-label">Risk Score</div>
-      <div class="fake-badge" *ngIf="factCheckResult().is_fake" style="background: #fef2f2; color: #ef4444; border: 1px solid #ef4444;">🚨 DETECTED AS MISINFORMATION</div>
-      <div class="fake-badge" *ngIf="!factCheckResult().is_fake" style="background: #f0fdf4; color: #166534; border: 1px solid #166534;">✅ VERIFIED TRUE / BENIGN</div>
+      <div class="fake-badge" *ngIf="result.is_fake" style="background: #fef2f2; color: #ef4444; border: 1px solid #ef4444;">🚨 DETECTED AS MISINFORMATION</div>
+      <div class="fake-badge" *ngIf="!result.is_fake" style="background: #f0fdf4; color: #166534; border: 1px solid #166534;">✅ VERIFIED TRUE / BENIGN</div>
     </div>
     
     <div class="result-box claims">
       <h4>Extracted Claims</h4>
       <ul>
-        <li *ngIf="factCheckResult().extracted_claims?.length === 0">No distinct claims detected.</li>
-        <li *ngFor="let claim of factCheckResult().extracted_claims">"{{ claim }}"</li>
+        <li *ngIf="result.extracted_claims.length === 0">No distinct claims detected.</li>
+        <li *ngFor="let claim of result.extracted_claims">"{{ claim }}"</li>
       </ul>
     </div>
     
     <div class="result-box breakdown">
       <h4>Fact-Check Breakdown</h4>
       <ul>
-        <li *ngIf="factCheckResult().fact_check_breakdown?.length === 0">No breakdown available.</li>
-        <li *ngFor="let breakdown of factCheckResult().fact_check_breakdown">
+        <li *ngIf="result.fact_check_breakdown.length === 0">No breakdown available.</li>
+        <li *ngFor="let breakdown of result.fact_check_breakdown">
           <div style="display: flex; gap: 8px;">
             <span>💡</span> <markdown [data]="breakdown"></markdown>
           </div>

@@ -1,9 +1,22 @@
+/**
+ * PublicAxis — Omni-Civic Copilot Component
+ * Multilingual conversational AI for election process education.
+ * Features voice I/O, 7 Indian languages, and step-by-step civic guidance.
+ */
 import { Component, inject, signal, OnInit, OnDestroy, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MarkdownModule } from 'ngx-markdown';
 import { Api } from '../../services/api';
 import { ToastService } from '../../services/toast';
+import { ImageUtils } from '../../services/image-utils';
+import { ChatMessage, ChatResponse } from '../../models/api.models';
+
+/** Supported language configuration for multilingual voice I/O. */
+interface LanguageOption {
+  code: string;
+  name: string;
+}
 
 @Component({
   selector: 'app-copilot-chat',
@@ -15,18 +28,21 @@ import { ToastService } from '../../services/toast';
 export class CopilotChat implements OnInit, OnDestroy {
   private api = inject(Api);
   private toast = inject(ToastService);
+  private imageUtils = inject(ImageUtils);
+
   query = signal('');
-  messages = signal<{role: 'user' | 'ai', text: string}[]>([]);
+  messages = signal<ChatMessage[]>([]);
   loading = signal(false);
 
-  // Hyper-Local Audio Governance Signals
+  // Audio & Voice State
   isAudioEnabled = signal(true);
   isListening = signal(false);
   usedMicrophone = signal(false);
   showScrollButton = signal(false);
   showSettingsSheet = signal(false);
   
-  languages = [
+  /** Supported Indian languages for multilingual civic assistance. */
+  languages: LanguageOption[] = [
     { code: 'en-IN', name: 'English' },
     { code: 'hi-IN', name: 'Hindi (हिंदी)' },
     { code: 'gu-IN', name: 'Gujarati (ગુજરાતી)' },
@@ -39,7 +55,7 @@ export class CopilotChat implements OnInit, OnDestroy {
   
   private recognition: any = null;
 
-  ngOnInit() {
+  ngOnInit(): void {
     const savedLang = localStorage.getItem('copilot_lang');
     if (savedLang) {
       this.selectedLang.set(savedLang);
@@ -47,12 +63,13 @@ export class CopilotChat implements OnInit, OnDestroy {
     this.initSpeechRecognition();
   }
 
-  onLanguageChange(lang: string) {
+  /** Update selected language and persist to localStorage. */
+  onLanguageChange(lang: string): void {
     this.selectedLang.set(lang);
     localStorage.setItem('copilot_lang', lang);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (this.recognition) {
       this.recognition.stop();
     }
@@ -61,32 +78,33 @@ export class CopilotChat implements OnInit, OnDestroy {
     }
   }
 
-  initSpeechRecognition() {
+  /** Initialize the Web Speech API for voice input. */
+  initSpeechRecognition(): void {
     const SpeechRecog = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (SpeechRecog) {
       this.recognition = new SpeechRecog();
-      this.recognition.continuous = false;
-      this.recognition.interimResults = false;
-      this.recognition.lang = 'en-IN'; // Localized Indian English
+      this.recognition!.continuous = false;
+      this.recognition!.interimResults = false;
+      this.recognition!.lang = 'en-IN';
 
-      this.recognition.onresult = (event: any) => {
+      this.recognition!.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
         this.query.set(transcript);
         this.isListening.set(false);
       };
 
-      this.recognition.onerror = (event: any) => {
-        console.error('Speech recognition error', event.error);
+      this.recognition!.onerror = () => {
         this.isListening.set(false);
       };
 
-      this.recognition.onend = () => {
+      this.recognition!.onend = () => {
         this.isListening.set(false);
       };
     }
   }
 
-  toggleListening() {
+  /** Toggle voice listening on/off. */
+  toggleListening(): void {
     if (!this.recognition) {
       alert("Voice recognition is not supported in your browser.");
       return;
@@ -99,25 +117,26 @@ export class CopilotChat implements OnInit, OnDestroy {
       this.recognition.lang = this.selectedLang();
       this.recognition.start();
       this.isListening.set(true);
-      this.usedMicrophone.set(true); // Track that user utilized voice input
+      this.usedMicrophone.set(true);
     }
   }
 
-  toggleAudio() {
+  /** Toggle text-to-speech audio output. */
+  toggleAudio(): void {
     this.isAudioEnabled.set(!this.isAudioEnabled());
     if (!this.isAudioEnabled() && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel(); // Stop playing immediately if muted
+      window.speechSynthesis.cancel();
     }
   }
 
-  speakResponse(text: string) {
+  /** Speak the AI response aloud using the Web Speech Synthesis API. */
+  speakResponse(text: string): void {
     if (!this.isAudioEnabled() || !('speechSynthesis' in window)) return;
     
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = this.selectedLang();
     
-    // Find localized voice if available
     const voices = window.speechSynthesis.getVoices();
     const localizedVoice = voices.find(v => v.lang === this.selectedLang() || v.lang.includes(this.selectedLang().split('-')[0]));
     if (localizedVoice) {
@@ -127,41 +146,43 @@ export class CopilotChat implements OnInit, OnDestroy {
     window.speechSynthesis.speak(utterance);
   }
 
-  sendMessage() {
+  /** Send the user's query to the Copilot API and display the response. */
+  sendMessage(): void {
     if (!this.query().trim()) return;
     const userQuery = this.query();
-    this.messages.update(m => [...m, {role: 'user', text: userQuery}]);
+    this.messages.update(m => [...m, { role: 'user', text: userQuery }]);
     this.query.set('');
     this.loading.set(true);
 
     const langName = this.languages.find(l => l.code === this.selectedLang())?.name || 'English';
 
     this.api.sendChatMessage(userQuery, langName).subscribe({
-      next: (res: any) => {
+      next: (res: ChatResponse) => {
         const responseText = res.response;
-        this.messages.update(m => [...m, {role: 'ai', text: responseText}]);
+        this.messages.update(m => [...m, { role: 'ai', text: responseText }]);
         this.loading.set(false);
-        this.triggerHaptic();
+        this.imageUtils.triggerHaptic();
         
-        // Auto-read response if user initiated conversation via microphone
         if (this.usedMicrophone()) {
           this.speakResponse(responseText);
-          this.usedMicrophone.set(false); // Reset for next interaction
+          this.usedMicrophone.set(false);
         }
       },
-      error: (err) => {
-        this.messages.update(m => [...m, {role: 'ai', text: 'Error connecting to the Copilot.'}]);
+      error: () => {
+        this.messages.update(m => [...m, { role: 'ai', text: 'Error connecting to the Copilot.' }]);
         this.loading.set(false);
         this.toast.error('Connection interrupted. Please try again.');
       }
     });
   }
 
-  copyToClipboard(text: string) {
+  /** Copy text content to the clipboard. */
+  copyToClipboard(text: string): void {
     navigator.clipboard.writeText(text);
   }
 
-  checkScroll() {
+  /** Check if the chat history is scrolled to bottom. */
+  checkScroll(): void {
     const container = document.querySelector('.chat-history');
     if (container) {
       const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 50;
@@ -169,20 +190,15 @@ export class CopilotChat implements OnInit, OnDestroy {
     }
   }
 
-  ngAfterViewChecked() {
+  ngAfterViewChecked(): void {
     this.checkScroll();
   }
 
-  scrollToBottom() {
+  /** Scroll the chat history container to the bottom. */
+  scrollToBottom(): void {
     const history = document.querySelector('.chat-history');
     if (history) {
       history.scrollTop = history.scrollHeight;
-    }
-  }
-
-  triggerHaptic() {
-    if (navigator.vibrate) {
-      navigator.vibrate(10);
     }
   }
 }

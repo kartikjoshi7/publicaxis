@@ -1,7 +1,14 @@
+/**
+ * PublicAxis — Form 6 Vision Validator Component
+ * Uses Gemini 2.5 Flash multimodal vision to analyze voter registration documents.
+ * Supports camera capture, file upload, and drag-and-drop.
+ */
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Api } from '../../services/api';
 import { ToastService } from '../../services/toast';
+import { ImageUtils } from '../../services/image-utils';
+import { ValidationResult, FormValidationResponse } from '../../models/api.models';
 
 @Component({
   selector: 'app-vision-validator',
@@ -13,64 +20,34 @@ import { ToastService } from '../../services/toast';
 export class VisionValidator {
   private api = inject(Api);
   private toast = inject(ToastService);
-  validationResult = signal<any>(null);
+  private imageUtils = inject(ImageUtils);
+
+  validationResult = signal<ValidationResult | null>(null);
   loading = signal(false);
   error = signal('');
   isDragActive = signal(false);
-  openCamera(inputElement: HTMLInputElement) {
+
+  /** Open the device's native camera for high-resolution document capture. */
+  openCamera(inputElement: HTMLInputElement): void {
     this.toast.info('Opening native camera for high-resolution capture...');
     inputElement.click();
   }
 
-  async compressImage(file: File): Promise<File> {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 1080;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx?.drawImage(img, 0, 0, width, height);
-          
-          canvas.toBlob((blob) => {
-            if (blob) {
-              resolve(new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() }));
-            } else {
-              resolve(file);
-            }
-          }, 'image/jpeg', 0.7);
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  onDragEnter(event: DragEvent) {
+  onDragEnter(event: DragEvent): void {
     event.preventDefault();
     this.isDragActive.set(true);
   }
 
-  onDragOver(event: DragEvent) {
+  onDragOver(event: DragEvent): void {
     event.preventDefault();
   }
 
-  onDragLeave(event: DragEvent) {
+  onDragLeave(event: DragEvent): void {
     event.preventDefault();
     this.isDragActive.set(false);
   }
 
-  onDrop(event: DragEvent) {
+  onDrop(event: DragEvent): void {
     event.preventDefault();
     this.isDragActive.set(false);
     const file = event.dataTransfer?.files[0];
@@ -79,23 +56,28 @@ export class VisionValidator {
     }
   }
 
-  async onFileSelected(event: any) {
-    const originalFile: File = event.target.files[0];
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const originalFile = input.files?.[0];
     if (originalFile) {
       this.processFile(originalFile);
     }
   }
 
-  private async processFile(originalFile: File) {
+  /**
+   * Compress and upload a document image for AI-powered validation.
+   * Uses the shared ImageUtils service for client-side compression.
+   */
+  private async processFile(originalFile: File): Promise<void> {
     this.loading.set(true);
     this.error.set('');
     this.validationResult.set(null);
-    this.triggerHaptic();
+    this.imageUtils.triggerHaptic();
     
-    const file = await this.compressImage(originalFile);
+    const file = await this.imageUtils.compressImage(originalFile);
     
     this.api.validateForm(file).subscribe({
-      next: (res: any) => {
+      next: (res: FormValidationResponse) => {
         this.validationResult.set(res.validation_result);
         this.loading.set(false);
         this.toast.success('Document Successfully Analyzed');
@@ -105,11 +87,5 @@ export class VisionValidator {
         this.loading.set(false);
       }
     });
-  }
-
-  triggerHaptic() {
-    if (navigator.vibrate) {
-      navigator.vibrate(10);
-    }
   }
 }

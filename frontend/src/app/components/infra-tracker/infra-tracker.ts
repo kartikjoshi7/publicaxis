@@ -1,8 +1,15 @@
+/**
+ * PublicAxis — Civic Access Auditor Component
+ * Uses device camera + GPS + Gemini 2.5 Flash to generate geo-tagged infrastructure audits.
+ * Supports camera capture, file upload, and drag-and-drop.
+ */
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MarkdownModule } from 'ngx-markdown';
 import { Api } from '../../services/api';
 import { ToastService } from '../../services/toast';
+import { ImageUtils } from '../../services/image-utils';
+import { InfrastructureReport } from '../../models/api.models';
 
 @Component({
   selector: 'app-infra-tracker',
@@ -14,65 +21,35 @@ import { ToastService } from '../../services/toast';
 export class InfraTracker {
   private api = inject(Api);
   private toast = inject(ToastService);
-  reportResult = signal<any>(null);
+  private imageUtils = inject(ImageUtils);
+
+  reportResult = signal<InfrastructureReport | null>(null);
   loading = signal(false);
   error = signal('');
   locationStatus = signal('Waiting for image upload...');
   isDragActive = signal(false);
-  openCamera(inputElement: HTMLInputElement) {
+
+  /** Open the device's native camera for infrastructure capture. */
+  openCamera(inputElement: HTMLInputElement): void {
     this.toast.info('Opening native camera for high-resolution capture...');
     inputElement.click();
   }
 
-  async compressImage(file: File): Promise<File> {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 1080;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx?.drawImage(img, 0, 0, width, height);
-          
-          canvas.toBlob((blob) => {
-            if (blob) {
-              resolve(new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() }));
-            } else {
-              resolve(file);
-            }
-          }, 'image/jpeg', 0.7);
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  onDragEnter(event: DragEvent) {
+  onDragEnter(event: DragEvent): void {
     event.preventDefault();
     this.isDragActive.set(true);
   }
 
-  onDragOver(event: DragEvent) {
+  onDragOver(event: DragEvent): void {
     event.preventDefault();
   }
 
-  onDragLeave(event: DragEvent) {
+  onDragLeave(event: DragEvent): void {
     event.preventDefault();
     this.isDragActive.set(false);
   }
 
-  onDrop(event: DragEvent) {
+  onDrop(event: DragEvent): void {
     event.preventDefault();
     this.isDragActive.set(false);
     const file = event.dataTransfer?.files[0];
@@ -81,21 +58,26 @@ export class InfraTracker {
     }
   }
 
-  async onFileSelected(event: any) {
-    const originalFile: File = event.target.files[0];
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const originalFile = input.files?.[0];
     if (originalFile) {
       this.processFile(originalFile);
     }
   }
 
-  private async processFile(originalFile: File) {
+  /**
+   * Compress, geolocate, and upload an infrastructure image for AI evaluation.
+   * Acquires GPS coordinates via the Geolocation API before submitting to the backend.
+   */
+  private async processFile(originalFile: File): Promise<void> {
     this.loading.set(true);
     this.error.set('');
     this.reportResult.set(null);
     this.locationStatus.set('Compressing image for fast upload...');
-    this.triggerHaptic();
+    this.imageUtils.triggerHaptic();
 
-    const file = await this.compressImage(originalFile);
+    const file = await this.imageUtils.compressImage(originalFile);
     this.locationStatus.set('Acquiring GPS coordinates...');
 
     if (navigator.geolocation) {
@@ -106,7 +88,7 @@ export class InfraTracker {
           const lng = position.coords.longitude;
           
           this.api.reportIssue(file, lat, lng).subscribe({
-            next: (res: any) => {
+            next: (res: InfrastructureReport) => {
               this.reportResult.set(res);
               this.loading.set(false);
               this.locationStatus.set('Analysis Complete.');
@@ -119,7 +101,7 @@ export class InfraTracker {
             }
           });
         },
-        (geoError) => {
+        () => {
           this.error.set('Location access denied or unavailable. Please enable GPS.');
           this.loading.set(false);
           this.locationStatus.set('Error.');
@@ -132,15 +114,10 @@ export class InfraTracker {
     }
   }
 
+  /** Get a color code based on severity score (green < 4, yellow < 8, red >= 8). */
   getSeverityColor(score: number): string {
     if (score < 4) return '#10b981';
     if (score < 8) return '#f59e0b';
     return '#ef4444';
-  }
-
-  triggerHaptic() {
-    if (navigator.vibrate) {
-      navigator.vibrate(10);
-    }
   }
 }

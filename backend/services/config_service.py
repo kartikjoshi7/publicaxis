@@ -1,3 +1,7 @@
+"""
+PublicAxis Backend — Google Cloud Secret Manager Configuration Service
+Provides zero-trust credential injection with local .env fallback for development.
+"""
 import os
 from dotenv import load_dotenv
 from google.cloud import secretmanager

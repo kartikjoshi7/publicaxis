@@ -1,3 +1,7 @@
+"""
+PublicAxis Backend — Google Cloud Firestore Database Service
+Manages Firestore client initialization and connection health verification.
+"""
 import os
 from google.cloud import firestore
 

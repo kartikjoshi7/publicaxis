@@ -1,3 +1,11 @@
+"""
+PublicAxis Backend — Civic Knowledge Base Service
+Curated Election Commission knowledge corpus with step-by-step voter registration
+timelines, election day schedules, and general election process phases.
+In production, this would be replaced by a vector database (RAG) for scalable retrieval.
+"""
+
+
 def get_election_context(query: str) -> str:
     """
     Mock RAG knowledge base returning hardcoded Indian election rules.

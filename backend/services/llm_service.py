@@ -1,3 +1,9 @@
+"""
+PublicAxis Backend — Google Vertex AI LLM Service
+Centralized AI inference gateway using Gemini 2.5 Flash for text generation,
+document analysis, infrastructure evaluation, and misinformation detection.
+All calls are instrumented with Google Cloud Logging for production telemetry.
+"""
 import os
 import logging
 import google.cloud.logging

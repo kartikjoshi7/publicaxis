@@ -1,13 +1,13 @@
 from fastapi import APIRouter
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from services.llm_service import generate_copilot_response
 from services.knowledge_service import get_election_context
 
 router = APIRouter(tags=["Omni-Civic Copilot"])
 
 class ChatRequest(BaseModel):
-    query: str
-    language: str = "English"
+    query: str = Field(..., min_length=1, max_length=5000, description="Civic query text")
+    language: str = Field(default="English", max_length=50, description="Response language")
 
 class ChatResponse(BaseModel):
     response: str

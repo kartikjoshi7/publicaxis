@@ -5,6 +5,40 @@
    View Encapsulation scoping issues.
    ═══════════════════════════════════════════ */
 
+/* ── Accessibility: Skip-to-Content Link ─── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  background: #1a237e;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 0 0 8px 8px;
+  z-index: 9999;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* ── Accessibility: Keyboard Focus Outlines ── */
+*:focus-visible {
+  outline: 3px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+/* ── Accessibility: Reduced Motion ────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* ── Dashboard Grid Layout (Desktop) ─────── */
 .dashboard-layout {
   display: grid;

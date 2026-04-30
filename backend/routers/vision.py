@@ -11,6 +11,8 @@ async def validate_form(file: UploadFile = File(...)):
         
     try:
         image_bytes = await file.read()
+        if len(image_bytes) > 10 * 1024 * 1024:
+            raise HTTPException(status_code=400, detail="File size must be under 10 MB.")
         analysis_json_str = analyze_document(image_bytes=image_bytes, mime_type=file.content_type)
         
         try:

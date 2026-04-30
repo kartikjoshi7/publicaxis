@@ -152,25 +152,47 @@ Graceful degradation powered by **Service Workers**. When internet connectivity 
 ### 🔒 Security & Trust
 - **Zero-Trust Architecture**: API keys and credentials managed exclusively through **Google Cloud Secret Manager** (`SecretManagerServiceClient`) — no secrets in source code or environment files in production.
 - **CORS Allowlist**: Origins restricted to `publicaxis-2026.web.app`, `publicaxis-2026.firebaseapp.com`, and `localhost:4200` only.
+- **Input Validation**: Pydantic models enforce `min_length`/`max_length` constraints on all user-submitted text fields (e.g., `query: str = Field(max_length=5000)`) to prevent injection and abuse.
+- **File Size Limits**: All image upload endpoints enforce a **10 MB maximum** file size to prevent resource exhaustion on Cloud Run.
 - **Structured Observability**: All AI inference calls, response latencies, and errors are logged to **Google Cloud Logging** with structured metadata for production debugging and audit trails.
 - **System Health Monitoring**: The `/system-status` endpoint performs live readiness checks against both **Google Cloud Firestore** and **Vertex AI** initialization status — enabling Cloud Run health probes.
 
 ---
 
+### ♿ Accessibility (WCAG 2.1 AA)
+- **Semantic HTML**: Proper use of `<header>`, `<main>`, `<nav>`, `<footer>`, `<section>` elements throughout the application.
+- **Skip-to-Content Link**: Keyboard-accessible skip link allows users to bypass navigation and jump directly to main content.
+- **Keyboard Navigation**: Visible `:focus-visible` outlines (3px solid `#38bdf8`) on all interactive elements for keyboard users.
+- **ARIA Support**: `aria-label` on all buttons and inputs, `aria-live="polite"` on the chat history for screen reader announcements of new messages.
+- **Reduced Motion**: `prefers-reduced-motion` media query disables all animations and transitions for motion-sensitive users.
+- **Multilingual Support**: 7 Indian languages supported (English, Hindi, Gujarati, Tamil, Telugu, Marathi, Bengali) with localized voice I/O.
+- **Voice Input/Output**: Hands-free operation via Web Speech API (`SpeechRecognition`) and `SpeechSynthesis` for visually impaired or hands-occupied users.
+- **Haptic Feedback**: `navigator.vibrate()` on key interactions for tactile confirmation on mobile devices.
+- **Responsive Design**: Mobile-first layout with `safe-area-inset` support for notched devices.
+- **PWA Installable**: `manifest.webmanifest` with `display: standalone` enables home screen installation for offline-first access.
+
+---
+
 ## 🧪 Testing
 
-The backend includes a test suite using **FastAPI TestClient**:
+The backend includes a comprehensive **PyTest** suite with **22 tests** across 7 test classes. All external dependencies (Vertex AI, Firestore) are mocked with `unittest.mock.patch` to ensure tests run without cloud credentials.
+
+| Test Class | Tests | Coverage |
+|-----------|-------|----------|
+| `TestHealthCheck` | 3 | Root endpoint, system status OK, system status degraded |
+| `TestCopilotChat` | 4 | Success, multilingual input, missing query, empty query rejection |
+| `TestVisionValidator` | 4 | Success, invalid file type, invalid AI response fallback, missing file |
+| `TestInfrastructureAuditor` | 3 | Success with GPS, invalid file type, missing coordinates |
+| `TestMisinfoSentinel` | 2 | Success, invalid file type |
+| `TestKycRadar` | 2 | Success, unknown candidate |
+| `TestEdgeCases` | 4 | Unknown routes, oversized input, CORS headers, OpenAPI schema |
 
 ```bash
-# Run the test suite
+# Run the full test suite
 cd backend
 pip install -r requirements.txt
 pytest test_main.py -v
 ```
-
-| Test | Coverage |
-|------|----------|
-| `test_health_check` | Root endpoint returns `200 OK` with expected payload |
 
 ---
 

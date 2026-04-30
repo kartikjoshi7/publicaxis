@@ -15,6 +15,8 @@ async def report_issue(
     
     try:
         contents = await file.read()
+        if len(contents) > 10 * 1024 * 1024:
+            raise HTTPException(status_code=400, detail="File size must be under 10 MB.")
         result_json_str = evaluate_infrastructure(contents, file.content_type)
         result = json.loads(result_json_str)
         

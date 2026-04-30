@@ -23,16 +23,16 @@ India's civic infrastructure serves over **1.4 billion citizens**, yet the proce
 - ♿ **Inaccessible polling infrastructure** — Thousands of polling booths remain non-compliant with accessibility standards, with no scalable mechanism for citizens to report or audit deficiencies.
 - 📢 **Civic misinformation** — During election cycles, fabricated circulars and manipulated government notices spread unchecked on WhatsApp and social media, eroding public trust in democratic institutions.
 
-**PublicAxis** eliminates these bottlenecks by deploying a **multimodal AI platform** powered by **Google Vertex AI (Gemini 2.5 Flash)** — the same foundation model capable of processing text, images, and documents within a single inference call. Citizens get instant, grounded answers to civic queries. Government officials gain automated, AI-driven auditing pipelines. Every interaction is designed for **mobile-first, low-connectivity environments** through a fully offline-capable **Progressive Web App** hosted on **Firebase Hosting** with the backend running serverlessly on **Google Cloud Run**.
+**PublicAxis** solves this by deploying an **AI-powered election education assistant** that helps citizens understand the **election process, timelines, and steps** in an interactive and easy-to-follow way. Powered by **Google Vertex AI (Gemini 2.5 Flash)** — a multimodal foundation model capable of processing text, images, and documents in a single inference call — the platform provides step-by-step voter registration guides, election day timelines, AI-driven document validation, and infrastructure auditing. Every interaction is designed for **mobile-first, low-connectivity environments** through a fully offline-capable **Progressive Web App** hosted on **Firebase Hosting** with the backend running serverlessly on **Google Cloud Run**.
 
 ---
 
-## 🎯 Chosen Vertical: E-Governance & Civic Tech
+## 🎯 Chosen Vertical: Election Process Education
 
-PublicAxis operates at the intersection of AI and public administration, serving two distinct user personas:
+PublicAxis is an **election education assistant** that helps users understand the election process, timelines, and steps in an interactive way — serving two distinct user personas:
 
 ### 👤 For Citizens
-- **Instant Civic FAQ** via the Omni-Civic Copilot — ask any election, voting, or governance question and receive a grounded, context-aware response in real time, powered by **Vertex AI**.
+- **Step-by-Step Election Guides** via the Omni-Civic Copilot — ask any question about the election process and receive a structured, step-by-step response with timelines (e.g., "How do I register to vote?" → 6-step guide with 21-45 day processing timeline), powered by **Vertex AI**.
 - **Offline Access** — critical voting FAQs and civic knowledge remain accessible even when internet connectivity drops, thanks to Service Worker caching in the **PWA**.
 - **Form 6 Pre-Validation** — upload or photograph your voter registration form *before* submission and receive AI-driven feedback on missing fields, formatting errors, and compliance issues via **Gemini 2.5 Flash multimodal vision**.
 
@@ -132,7 +132,7 @@ PublicAxis is engineered around a strict separation of concerns, operating acros
 ## ⚡ Core Features
 
 ### 🤖 Omni-Civic Copilot
-Multimodal conversational AI interface for civic queries. Citizens can ask election-related questions in natural language and receive grounded, context-aware responses pulled from an embedded civic knowledge base. Powered by **Google Vertex AI (Gemini 2.5 Flash)** with system-level prompt engineering and a curated Election Commission knowledge corpus. Supports **multilingual queries** with language-aware prompt engineering via a `language` parameter.
+An interactive election education assistant that helps citizens understand the **election process, timelines, and steps** in an easy-to-follow way. Ask any question — "How do I register to vote?", "What happens on election day?", "What are the phases of a general election?" — and receive a **structured, step-by-step guide** with timelines, pulled from a curated Election Commission knowledge corpus. Powered by **Google Vertex AI (Gemini 2.5 Flash)** with system-level prompt engineering. Supports **7 Indian languages** (English, Hindi, Gujarati, Tamil, Telugu, Marathi, Bengali) with localized voice input/output.
 
 ### 📄 Form 6 Vision Validator
 Uses **Gemini 2.5 Flash's multimodal vision capabilities** via the Vertex AI SDK to scan uploaded or camera-captured voter registration forms (Form 6). The AI identifies missing fields, formatting inconsistencies, and compliance gaps — returning a structured JSON validation report (`missing_fields`, `formatting_errors`) with actionable remediation steps. Citizens catch errors *before* submission, not weeks after. Response format is enforced via `response_mime_type: "application/json"`.
@@ -315,7 +315,7 @@ publicaxis/
 
 ## 🏆 Credits
 
-This project was built for the **[Hack2Skill PromptWars Hackathon](https://hack2skill.com/)** — E-Governance & Civic Tech Vertical — by **[Kartik Joshi](https://github.com/kartikjoshi7)**.
+This project was built for the **[Hack2Skill PromptWars Hackathon](https://hack2skill.com/)** — Election Process Education Vertical — by **[Kartik Joshi](https://github.com/kartikjoshi7)**.
 
 ---
 

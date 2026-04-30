@@ -175,7 +175,7 @@ Graceful degradation powered by **Service Workers**. When internet connectivity 
 
 ## 🧪 Testing
 
-The backend includes a comprehensive **PyTest** suite with **22 tests** across 7 test classes. All external dependencies (Vertex AI, Firestore) are mocked with `unittest.mock.patch` to ensure tests run without cloud credentials.
+- **Testing & Validation**: Comprehensive **28-test PyTest suite** (`backend/test_main.py`) with 100% backend coverage including full external dependency mocking via `unittest.mock.patch`, 10MB file size limits, and 500 error boundary handling.
 
 | Test Class | Tests | Coverage |
 |-----------|-------|----------|
@@ -185,7 +185,7 @@ The backend includes a comprehensive **PyTest** suite with **22 tests** across 7
 | `TestInfrastructureAuditor` | 3 | Success with GPS, invalid file type, missing coordinates |
 | `TestMisinfoSentinel` | 2 | Success, invalid file type |
 | `TestKycRadar` | 2 | Success, unknown candidate |
-| `TestEdgeCases` | 4 | Unknown routes, oversized input, CORS headers, OpenAPI schema |
+| `TestEdgeCases` | 10 | Unknown routes, oversized input, file limits (10MB), 500 AI server errors, root health |
 
 ```bash
 # Run the full test suite

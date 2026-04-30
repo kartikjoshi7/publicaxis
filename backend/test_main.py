@@ -247,3 +247,73 @@ class TestEdgeCases:
         assert response.status_code == 200
         schema = response.json()
         assert schema["info"]["title"] == "PublicAxis Backend"
+
+    def test_root_health_check(self):
+        response = client.get("/")
+        assert response.status_code == 200
+        assert response.json() == {"message": "Hello PublicAxis"}
+
+    def test_file_size_limit_exceeded(self):
+        # 10MB + 1 byte
+        oversized_image = io.BytesIO(b"\x00" * (10 * 1024 * 1024 + 1))
+        
+        # Test vision endpoint
+        response = client.post(
+            "/api/validate-form",
+            files={"file": ("large.png", oversized_image, "image/png")}
+        )
+        assert response.status_code == 400
+        assert "10 MB" in response.json()["detail"]
+
+        # Reset pointer for next request
+        oversized_image.seek(0)
+        
+        # Test infra endpoint
+        response = client.post(
+            "/api/report-issue",
+            files={"file": ("large.png", oversized_image, "image/png")},
+            data={"latitude": "0", "longitude": "0"}
+        )
+        assert response.status_code == 400
+        assert "10 MB" in response.json()["detail"]
+
+        oversized_image.seek(0)
+        
+        # Test misinfo endpoint
+        response = client.post(
+            "/api/fact-check",
+            files={"file": ("large.png", oversized_image, "image/png")}
+        )
+        assert response.status_code == 400
+        assert "10 MB" in response.json()["detail"]
+
+    @patch("routers.copilot.generate_copilot_response", side_effect=Exception("Vertex AI API Down"))
+    def test_copilot_internal_server_error(self, mock_ai):
+        response = client.post("/api/chat", json={"query": "test"})
+        # Note: the copilot route currently returns the error as text if it fails, or maybe it throws 500?
+        # Actually in the router we catch and return it as text in `ai_response` or if the router doesn't catch it, it throws 500.
+        # Wait, the router doesn't try/except, it just calls `generate_copilot_response`.
+        # `generate_copilot_response` has a try/except that returns a string on error.
+        assert response.status_code == 200
+        assert "technical difficulties" in response.json()["response"].lower()
+
+    @patch("routers.vision.analyze_document", side_effect=Exception("Vertex AI API Down"))
+    def test_vision_internal_server_error(self, mock_ai):
+        fake_image = io.BytesIO(b"\x89PNG\r\n\x1a\n" + b"\x00" * 10)
+        response = client.post("/api/validate-form", files={"file": ("form6.png", fake_image, "image/png")})
+        assert response.status_code == 500
+        assert "Vertex AI API Down" in response.json()["detail"]
+
+    @patch("routers.infrastructure.evaluate_infrastructure", side_effect=Exception("Vertex AI API Down"))
+    def test_infra_internal_server_error(self, mock_ai):
+        fake_image = io.BytesIO(b"\x89PNG\r\n\x1a\n" + b"\x00" * 10)
+        response = client.post("/api/report-issue", files={"file": ("road.png", fake_image, "image/png")}, data={"latitude": "0", "longitude": "0"})
+        assert response.status_code == 500
+        assert "Vertex AI API Down" in response.json()["detail"]
+
+    @patch("routers.misinfo.analyze_misinformation", side_effect=Exception("Vertex AI API Down"))
+    def test_misinfo_internal_server_error(self, mock_ai):
+        fake_image = io.BytesIO(b"\x89PNG\r\n\x1a\n" + b"\x00" * 10)
+        response = client.post("/api/fact-check", files={"file": ("fake.png", fake_image, "image/png")})
+        assert response.status_code == 500
+        assert "Vertex AI API Down" in response.json()["detail"]

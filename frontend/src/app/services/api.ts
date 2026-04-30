@@ -4,7 +4,7 @@ import { Observable, throwError, timer } from 'rxjs';
 import { catchError, timeout, retry } from 'rxjs/operators';
 import { ToastService } from './toast';
 
-const BASE_URL = 'https://publicaxis-backend-6enzsdbexa-uc.a.run.app/api';
+const BASE_URL = 'https://publicaxis-backend-23063176487.us-central1.run.app/api';
 
 @Injectable({
   providedIn: 'root'

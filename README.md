@@ -10,7 +10,7 @@
 
 🚀 **Live Production Demo:** [https://publicaxis-2026.web.app](https://publicaxis-2026.web.app) (Hosted on Firebase)
 
-⚙️ **API Backend:** [https://publicaxis-backend-6enzsdbexa-uc.a.run.app](https://publicaxis-backend-6enzsdbexa-uc.a.run.app) (Hosted on Google Cloud Run)
+⚙️ **API Backend:** [https://publicaxis-backend-23063176487.us-central1.run.app](https://publicaxis-backend-23063176487.us-central1.run.app) (Hosted on Google Cloud Run)
 
 ---
 
